@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Instead of prisma db push, for mongodb it is npx prisma generate
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
+  email              String  @unique
+  phone              String?
+  firstName          String?
+  lastName           String?
+  role               Role    @default(USER)
+  addressId          String?
+  profilePicturePath String?
+}
+
+type IdAndRole {
+  userId String
+  name   String
+  role   Role
+}
+
+type ShippingAndReturn {
+  isFreeShipping Boolean @default(true)
+}
+
+enum ProductType {
+  HARDWARE
+  CURTAIN
+  PILLOW
+}
+
+type Note {
+  note      String
+  createdBy IdAndRole
+}
+
+type ImageColorInfo {
+  secondaryImagesPaths String[]
+  colorInfo            Color
+  mainImagePath        String
+}
+
+model Address {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  street1 String
+  street2 String?
+  city    String?
+  zip     String?
+  country String?
+  userId  String  @unique
+}
+
+model Login {
+  id                   String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId               String
+  role                 Role
+  userName             String?
+  password             String
+  communicationChannel String?
+}
+
+model Issue {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  status      Status   @default(OPEN)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Product {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  productId      String      @unique
+  path           String
+  createBy       IdAndRole
+  color          Color[]
+  price          Int
+  isOutofStock   Boolean     @default(false)
+  deal           Deals[]
+  description    String
+  type           ProductType
+  note           Note?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  isDetailFilled Boolean     @default(false)
+}
+
+model ProductDetailView {
+  id                String           @id @default(auto()) @map("_id") @db.ObjectId
+  productId         String           @unique
+  color             Color[]
+  createBy          IdAndRole
+  detailDescription String
+  rating            Float?
+  otherImagesPaths  String[]
+  imageColorInfo    ImageColorInfo[]
+  careDescription   String
+  isOutOfStock      Boolean          @default(false)
+  note              Note?
+  isFreeShipping    Boolean          @default(true)
+  isCustomizable    Boolean          @default(false)
+}
+
+enum Status {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+enum ProductKind {
+  CURTAIN
+  POLE
+  PILLOW
+}
+
+enum Deals {
+  BUY_1_GET_1
+  FIFTY_OFF
+  SEVENTY_OFF
+  TWENTY_OFF
+  FIFTEEN_OFF
+  TEN_OFF
+  NEW
+}
+
+enum Color {
+  RED
+  BLUE
+  GREEN
+  YELLOW
+  PINK
+  PURPLE
+  BLACK
+  WHITE
+  GREY
+  NO_COLOR
+}
+
+enum Role {
+  USER
+  ADMIN
+  ROOT
+}
