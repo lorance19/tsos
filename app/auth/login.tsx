@@ -1,12 +1,9 @@
 'use server'
-import {createSession, getCredential} from "@/app/Util/constants/session";
+import {createSession} from "@/app/Util/constants/session";
 import {LoginForm} from "@/app/View/login/page";
 import bcrypt from "bcryptjs";
 import prisma from "@/prisma/client";
-import {makeZodError} from "@/app/auth/route";
-import {useMutation} from "@tanstack/react-query";
 import {findUserById} from "@/app/busniessLogic/User/userManager";
-import {redirect} from "next/navigation";
 
 export async function getUser(data: LoginForm) {
    const existingUser = await findByUserName(data.username)

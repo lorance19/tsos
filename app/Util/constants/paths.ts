@@ -1,4 +1,5 @@
 export const LOGIN_URL = '/View/login';
+export const UNAUTH_URL = '/View/unauthorized';
 
 export const SIGN_UP = {
     VIEW_PATH : '/View/signUp',

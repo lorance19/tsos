@@ -16,9 +16,9 @@ function Nav() {
     // Define all possible links with role-based visibility
     const allLinks: NavLink [] = [
         {label: 'Thit Ser', href: '/', hidden: true},
-        {label: 'Home', href:'/kk', hidden: false},
-        {label: 'Product', href:'/ss', hidden: false},
-        {label: 'Contact Us', href:'/dd', hidden: false},
+        {label: 'Home', href:'/View/home', hidden: false},
+        {label: 'Product', href:'/View/product', hidden: false},
+        {label: 'Contact Us', href:'/View/Contact Us', hidden: false},
 
         // Public links (only show when NOT logged in)
         {label: 'Login', href: LOGIN_URL, hidden: false, requireAuth: false},

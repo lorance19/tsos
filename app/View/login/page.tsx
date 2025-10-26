@@ -1,7 +1,6 @@
 'use client'
 import React from 'react';
 import {
-    createUserSchema,
     userLoginValidationSchema,
     userLoginValidationSchemaKey
 } from "@/app/validation/userValidation";
@@ -20,7 +19,7 @@ export type LoginForm = z.infer<typeof userLoginValidationSchema>
 function Login() {
     const router = useRouter();
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<LoginForm>({
+    const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
         resolver: zodResolver(userLoginValidationSchema),
     });
 
