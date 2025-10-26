@@ -10,3 +10,10 @@ export const createUserSchema = z.object({
     message:"Passwords dont match",
     path:["confirmPassword"]
 })
+
+export const userLoginValidationSchema = z.object({
+    username: z.string().min(1, "Username is required").max(30),
+    password: z.string().min(1, "Password is required")
+})
+export const userLoginValidationSchemaKey = userLoginValidationSchema.keyof().enum;
+

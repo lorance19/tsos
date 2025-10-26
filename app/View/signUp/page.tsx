@@ -1,7 +1,7 @@
 'use client'
 import React, {useState} from 'react';
 import {useRouter} from "next/navigation";
-import {createUserSchema} from "@/app/validation/createUser";
+import {createUserSchema} from "@/app/validation/userValidation";
 import {z} from "zod";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -24,6 +24,7 @@ function SignUp() {
 
     const { error, toastMessage, showError, showSuccess } = useToastNotifications();
     const createUser = useCreateUser();
+    const isPending = createUser.isPending;
     const { register, handleSubmit, reset, formState: { errors } } = useForm<UserForm>({
         resolver: zodResolver(createUserSchema),
     });
@@ -49,33 +50,35 @@ function SignUp() {
         <div>
             <UnexpectedError errorMessage={error} />
             {toastMessage && <SuccessToast toastMessage ={toastMessage}/>}
-            <form className="w-1/2 mt-2" onSubmit={handleSubmit(onSubmit)}>
-                <div className="grid grid-rows-4 grid-cols-2 gap-2 mb-2">
-                    <label className="input input-bordered flex gap-5">
+            <form className="mt-5 flex justify-center " onSubmit={handleSubmit(onSubmit)}>
+                <fieldset disabled={isPending}>
+                    <label className="input input-bordered basis-lg m-2">
                         <span className="opacity-70"><FaRegUser/></span>
                         <input type="text" placeholder="Username" {...register('userName')} />
+                        <ErrorMessage>{errors.userName?.message}</ErrorMessage>
                     </label>
-                    <ErrorMessage>{errors.userName?.message}</ErrorMessage>
 
-                    <label className="input input-bordered flex gap-5">
+                    <label className="input input-bordered basis-lg m-2">
                         <span className="opacity-70"><MdOutlineMailOutline/></span>
                         <input type="email" placeholder="Email" {...register('email')} />
+                        <ErrorMessage>{errors.email?.message}</ErrorMessage>
                     </label>
-                    <ErrorMessage>{errors.email?.message}</ErrorMessage>
 
-                    <label className="input input-bordered flex gap-5">
-                        <span className="opacity-70"><GrKey/></span>
-                        <input type="password" placeholder="Password" {...register('password')} />
-                    </label>
-                    <ErrorMessage>{errors.password?.message}</ErrorMessage>
+                    <label className="input input-bordered flex gap-5 m-2">
+                            <span className="opacity-70"><GrKey/></span>
+                            <input type="password" placeholder="Password" {...register('password')} />
+                            <ErrorMessage>{errors.password?.message}</ErrorMessage>
 
-                    <label className="input input-bordered flex gap-5">
-                        <span className="opacity-70"><IoBagCheck/></span>
-                        <input type="password" placeholder="Confirm Password" {...register('confirmPassword')} />
-                    </label>
-                    <ErrorMessage>{errors.confirmPassword?.message}</ErrorMessage>
-                </div>
-                <SubmitButton isSubmitting={createUser.isPending} text="Register"/>
+                        </label>
+
+                        <label className="input input-bordered flex gap-5 m-2">
+                            <span className="opacity-70"><IoBagCheck/></span>
+                            <input type="password" placeholder="Confirm Password" {...register('confirmPassword')} />
+                            <ErrorMessage>{errors.confirmPassword?.message}</ErrorMessage>
+                        </label>
+
+                    <SubmitButton className="m-2" isSubmitting={createUser.isPending} text="Register"/>
+            </fieldset>
             </form>
         </div>
     );

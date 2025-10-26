@@ -1,5 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
-import {createUserSchema} from "@/app/validation/createUser";
+import {createUserSchema} from "@/app/validation/userValidation";
 import prisma from "@/prisma/client";
 import { hash } from 'bcryptjs';
 import {z, ZodError} from "zod";
@@ -10,7 +10,7 @@ import {Role} from "@prisma/client";
 
 
 // Utility to create a ZodError and format
-function makeZodError(path: string, message: string) {
+export function makeZodError(path: string, message: string) {
     return z.treeifyError(new ZodError([
         {
             code: 'custom', // ← use literal string instead of ZodIssueCode.custom
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 
         // ✅ Create user
         const newUser = await prisma.user.create({
-            data: { email: body.email, role: Role.ADMIN },
+            data: { email: body.email, role: Role.USER },
         });
 
         if (!newUser.id || !newUser.role) {

@@ -29,7 +29,6 @@ export default async function RootLayout({
 }>) {
 
     const user = await getCredential();
-    console.log('🔍 Layout - User from session:', user);
     return (
     <html lang="en" data-theme="bumblebee">
       <body
