@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import prisma from "@/prisma/client";
 import {findUserById} from "@/app/busniessLogic/User/userManager";
 
+//Signup route
 export async function getUser(data: LoginForm) {
    const existingUser = await findByUserName(data.username)
    if (!existingUser) {

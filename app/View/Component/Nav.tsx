@@ -74,6 +74,7 @@ function Nav() {
                         >
                             {link.label}
                         </Link>)}
+                    {user && <Link href={`/View/userProfile/${user.userId}`} key={`user-profile-${user.userId}`}>Profile</Link>}
                     {user && <SignOutButton />}
                 </ul>
             </nav>

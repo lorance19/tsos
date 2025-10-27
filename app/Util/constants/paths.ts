@@ -3,7 +3,7 @@ export const UNAUTH_URL = '/View/unauthorized';
 
 export const SIGN_UP = {
     VIEW_PATH : '/View/signUp',
-    API_PATH: '/api/signUp'
+    API_PATH: '/auth/signUp'
 };
 
 export const LOGOUT = {

@@ -15,7 +15,11 @@ export function useCreateUser() {
     return useMutation({
         mutationFn: async (data: UserForm) => {
             const res = await axios.post(SIGN_UP.API_PATH, data);
-            return res.data;
+            if (res.status === 201) {
+                return res.data;
+            } else {
+                throw new Error(res.statusText);
+            }
         },
     });
 }

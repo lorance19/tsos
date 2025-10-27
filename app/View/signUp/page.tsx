@@ -54,28 +54,23 @@ function SignUp() {
                     <label className="input input-bordered basis-lg m-2">
                         <span className="opacity-70"><FaRegUser/></span>
                         <input type="text" placeholder="Username" {...register('userName')} />
-                        <ErrorMessage>{errors.userName?.message}</ErrorMessage>
                     </label>
-
+                    <ErrorMessage>{errors.userName?.message}</ErrorMessage>
                     <label className="input input-bordered basis-lg m-2">
                         <span className="opacity-70"><MdOutlineMailOutline/></span>
                         <input type="email" placeholder="Email" {...register('email')} />
-                        <ErrorMessage>{errors.email?.message}</ErrorMessage>
                     </label>
-
+                    <ErrorMessage>{errors.email?.message}</ErrorMessage>
                     <label className="input input-bordered flex gap-5 m-2">
-                            <span className="opacity-70"><GrKey/></span>
-                            <input type="password" placeholder="Password" {...register('password')} />
-                            <ErrorMessage>{errors.password?.message}</ErrorMessage>
-
-                        </label>
-
-                        <label className="input input-bordered flex gap-5 m-2">
-                            <span className="opacity-70"><IoBagCheck/></span>
-                            <input type="password" placeholder="Confirm Password" {...register('confirmPassword')} />
-                            <ErrorMessage>{errors.confirmPassword?.message}</ErrorMessage>
-                        </label>
-
+                        <span className="opacity-70"><GrKey/></span>
+                        <input type="password" placeholder="Password" {...register('password')} />
+                    </label>
+                    <ErrorMessage>{errors.password?.message}</ErrorMessage>
+                    <label className="input input-bordered flex gap-5 m-2">
+                        <span className="opacity-70"><IoBagCheck/></span>
+                        <input type="password" placeholder="Confirm Password" {...register('confirmPassword')} />
+                    </label>
+                    <ErrorMessage>{errors.confirmPassword?.message}</ErrorMessage>
                     <SubmitButton className="m-2" isSubmitting={createUser.isPending} text="Register"/>
             </fieldset>
             </form>

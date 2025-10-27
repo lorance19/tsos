@@ -13,6 +13,8 @@ import {GrKey} from "react-icons/gr";
 import {userLogin} from "@/app/busniessLogic/User/userManager";
 import SubmitButton from "@/app/View/Component/SubmitButton";
 import {useRouter} from "next/navigation";
+import Link from "next/link";
+import {SIGN_UP} from "@/app/Util/constants/paths";
 
 export type LoginForm = z.infer<typeof userLoginValidationSchema>
 
@@ -46,7 +48,7 @@ function Login() {
                 </label>
                 <ErrorMessage>{errors.password?.message}</ErrorMessage>
                 <div className="flex lg:flex-row md:flex-row flex-col gap-2">
-                    <button className="btn btn-success w-full md:w-1/2 lg:w-1/2">Sign Up</button>
+                    <Link className="btn btn-success w-full md:w-1/2 lg:w-1/2" href={SIGN_UP.VIEW_PATH}>Sign Up</Link>
                     <SubmitButton className="btn btn-primary w-full md:w-1/2 lg:w-1/2" text="Login" isSubmitting={isPending}/>
                 </div>
                 {isError && (

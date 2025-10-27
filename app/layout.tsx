@@ -35,7 +35,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
       <QueryClientProvider>
-          <AuthProvider user={user}>
+          <AuthProvider user={user} isPending={false}>
           <Nav/>
           <main>
               {children}
