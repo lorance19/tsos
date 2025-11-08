@@ -3,7 +3,7 @@ import React, {useTransition} from 'react';
 import {NavLink} from "@/app/View/Component/utilties/NavLink";
 import Link from "next/link";
 import {usePathname, useRouter} from "next/navigation";
-import {LOGIN_URL, LOGOUT, SIGN_UP} from "@/app/Util/constants/paths";
+import {LOGIN_URL, LOGOUT, SIGN_UP, USER_PROFILE} from "@/app/Util/constants/paths";
 import {Role} from "@prisma/client";
 import {useAuth} from "@/app/auth/context";
 import {deleteSession} from "@/app/Util/constants/session";
@@ -24,7 +24,7 @@ function Nav() {
         {label: 'Login', href: LOGIN_URL, hidden: false, requireAuth: false},
 
         // Admin only links
-        {label: 'Management', href: '/admin/management', hidden: false, roles: [Role.ADMIN]},
+        {label: 'Management', href: '/admin/management', hidden: false, roles: [Role.ADMIN, Role.ROOT]},
         {label: 'Users', href: '/admin/users', hidden: false, roles: [Role.ADMIN]},
 
         // Admin and Moderator links
@@ -74,7 +74,7 @@ function Nav() {
                         >
                             {link.label}
                         </Link>)}
-                    {user && <Link href={`/View/userProfile/${user.userId}`} key={`user-profile-${user.userId}`}>Profile</Link>}
+                    {user && <Link className={`${currentPath.includes(USER_PROFILE.VIEW_PATH) ? "text-secondary" : "text-black"} hover:text-secondary transition delay-70 duration-150 hover:scale-110`} href={`/View/userProfile/${user.userId}`} key={`user-profile-${user.userId}`}>Profile</Link>}
                     {user && <SignOutButton />}
                 </ul>
             </nav>

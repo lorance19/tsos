@@ -17,7 +17,7 @@ const PROTECTED_ROUTES: Record<string, ProtectedRouteConfig> ={
     '/dashboard': { roles: [Role.USER, Role.ADMIN, Role.ROOT], redirect: UNAUTH_URL },
 
     // Example: Only ADMIN can access /admin
-    '/admin': { roles: [Role.ADMIN], redirect: UNAUTH_URL },
+    '/admin': { roles: [Role.ADMIN, Role.ROOT], redirect: UNAUTH_URL },
 
     // Example: ADMIN and MANAGER can access /management
     '/management': { roles: [Role.ADMIN, Role.ROOT], redirect: UNAUTH_URL },

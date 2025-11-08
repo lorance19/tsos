@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 
         // ✅ Create user
         const newUser = await prisma.user.create({
-            data: { email: body.email, role: Role.USER },
+            data: { email: body.email, role: Role.CUSTOMER },
         });
 
         if (!newUser.id || !newUser.role) {

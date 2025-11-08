@@ -2,7 +2,8 @@
 import React, {useEffect} from 'react';
 import {useParams, useRouter} from "next/navigation";
 import {useAuth} from "@/app/auth/context";
-import {UNAUTH_URL} from "@/app/Util/constants/paths";
+import {LOGIN_URL, UNAUTH_URL} from "@/app/Util/constants/paths";
+import {Role} from "@prisma/client";
 
 function UserProfile() {
     const params = useParams();
@@ -16,10 +17,10 @@ function UserProfile() {
             return;
         }
         if (!user || !user.userId) {
-            router.replace(UNAUTH_URL);
+            router.replace(LOGIN_URL);
             return;
         }
-        if (String(user.userId) !== userIdParam) {
+        if (String(user.userId) !== userIdParam && user.role === Role.USER) {
             router.replace(UNAUTH_URL);
             return;
         }
