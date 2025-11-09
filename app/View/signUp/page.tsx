@@ -1,7 +1,7 @@
 'use client'
 import React, {useState} from 'react';
 import {useRouter} from "next/navigation";
-import {createUserSchema} from "@/app/validation/userValidation";
+import {createUserSchema} from "@/app/busniessLogic/User/userValidation";
 import {z} from "zod";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -11,7 +11,7 @@ import {MdOutlineMailOutline} from "react-icons/md";
 import {GrKey} from "react-icons/gr";
 import {IoBagCheck} from "react-icons/io5";
 import SubmitButton from "@/app/View/Component/SubmitButton";
-import {useCreateUser} from "@/app/busniessLogic/User/userManager";
+import {useSignUpUser} from "@/app/busniessLogic/User/userManager";
 import SuccessToast from "@/app/View/Component/SuccessToast";
 import {FaRegUser} from "react-icons/fa";
 
@@ -22,7 +22,7 @@ function SignUp() {
     const router = useRouter();
 
     const { error, toastMessage, showError, showSuccess } = useToastNotifications();
-    const createUser = useCreateUser();
+    const createUser = useSignUpUser();
     const isPending = createUser.isPending;
     const { register, handleSubmit, reset, formState: { errors } } = useForm<UserForm>({
         resolver: zodResolver(createUserSchema),

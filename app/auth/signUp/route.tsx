@@ -1,25 +1,13 @@
 import {NextRequest, NextResponse} from "next/server";
-import {createUserSchema} from "@/app/validation/userValidation";
 import prisma from "@/prisma/client";
 import { hash } from 'bcryptjs';
-import {z, ZodError} from "zod";
 import {parseRequestBodyZod} from "@/app/Util/parseRequestBodyZod";
-import {createSession, deleteSession, getSession} from "@/app/Util/constants/session";
+import {createSession} from "@/app/Util/constants/session";
 import {Role} from "@prisma/client";
+import {makeZodError} from "@/app/Util/zodUtil";
+import {createUserSchema} from "@/app/busniessLogic/User/userValidation";
 
 
-
-// Utility to create a ZodError and format
-export function makeZodError(path: string, message: string) {
-    return z.treeifyError(new ZodError([
-        {
-            code: 'custom', // ← use literal string instead of ZodIssueCode.custom
-            path: [path],
-            message,
-        },
-    ]));
-
-}
 
 export async function POST(request: NextRequest) {
     try {

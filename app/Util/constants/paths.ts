@@ -17,6 +17,7 @@ export const LOGOUT = {
 export const ADMIN_MANAGEMENTS = {
     PATH: {
         USERS: '/admin/management/users',
+        ADD_USER: '/admin/management/addNewUser',
         ISSUES: '/admin/management/issues',
         PRODUCTS: '/admin/management/products'
     }

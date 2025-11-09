@@ -3,7 +3,7 @@ import React from 'react';
 import {
     userLoginValidationSchema,
     userLoginValidationSchemaKey
-} from "@/app/validation/userValidation";
+} from "@/app/busniessLogic/User/userValidation";
 import {z} from "zod";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
