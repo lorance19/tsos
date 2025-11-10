@@ -14,6 +14,7 @@ import SubmitButton from "@/app/View/Component/SubmitButton";
 import {useSignUpUser} from "@/app/busniessLogic/User/userManager";
 import SuccessToast from "@/app/View/Component/SuccessToast";
 import {FaRegUser} from "react-icons/fa";
+import {useToastNotifications} from "@/app/Util/toast";
 
 type UserForm = z.infer<typeof createUserSchema>;
 
@@ -78,28 +79,6 @@ function SignUp() {
     );
 }
 
-
-function useToastNotifications() {
-    const [error, setError] = useState('');
-    const [toastMessage, setToastMessage] = useState('');
-
-    const showError = (message: string, duration = 3000) => {
-        setError(message);
-        setTimeout(() => setError(''), duration);
-    };
-
-    const showSuccess = (message: string, duration = 3000) => {
-        setToastMessage(message);
-        setTimeout(() => setToastMessage(''), duration);
-    };
-
-    const clearMessages = () => {
-        setError('');
-        setToastMessage('');
-    };
-
-    return { error, toastMessage, showError, showSuccess, clearMessages };
-}
 
 // Extract validation error handling logic
 function extractValidationError(error: any): string {

@@ -48,7 +48,7 @@ function Login() {
                 </label>
                 <ErrorMessage>{errors.password?.message}</ErrorMessage>
                 <div className="flex lg:flex-row md:flex-row flex-col gap-2">
-                    <Link className="btn btn-success w-full md:w-1/2 lg:w-1/2" href={SIGN_UP.VIEW_PATH}>Sign Up</Link>
+                    <Link className="btn btn-success w-full md:w-1/2 lg:w-1/2" href={SIGN_UP.VIEW}>Sign Up</Link>
                     <SubmitButton className="btn btn-primary w-full md:w-1/2 lg:w-1/2" text="Login" isSubmitting={isPending}/>
                 </div>
                 {isError && (

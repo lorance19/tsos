@@ -3,7 +3,9 @@ import {z} from "zod";
 import {Role} from "@prisma/client";
 
 const baseUserFieldsSchema = z.object({
-    userName: z.string().min(1, "Username is required").max(25, "Username is too long!"),
+    userName: z.string()
+        .min(1, "Username is required")
+        .max(25, "Username is too long!"),
     email: z.email("Please enter valid email")
         .min(5, 'Email must be at least 5 characters long')
         .max(50, 'Email must be at most 50 characters long'),
@@ -17,8 +19,14 @@ const roleEnum = z.enum(Role).refine(
 
 export const adminAddUserSchema = baseUserFieldsSchema.extend(
     {
-        firstName: z.string().min(1, "First name is required").max(30),
-        lastName: z.string().min(1, "Last name is required").max(30),
+        firstName: z.string()
+            .min(1, "First name is required")
+            .max(30)
+            .regex(/^[a-zA-Z]+$/, "Username must contain only letters"),
+        lastName: z.string()
+            .min(1, "Last name is required")
+            .max(30)
+            .regex(/^[a-zA-Z]+$/, "Username must contain only letters"),
         phone: z.string().min(10, 'Phone number must be at least 10 digits') // Minimum length
             .max(15, 'Phone number must be at most 15 digits') // Maximum length
             .regex(/^\d+$/, 'Phone number must contain only digits'), // Only digits allowed

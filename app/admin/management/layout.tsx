@@ -11,13 +11,13 @@ function ManagementLayout({ children }: { children: React.ReactNode }) {
                 <nav className="menu space-y-2">
                     <ul>
                         <li>
-                            <Link className="link link-hover" href={ADMIN_MANAGEMENTS.PATH.USERS}>Users</Link>
+                            <Link className="link link-hover" href={ADMIN_MANAGEMENTS.USERS.VIEW}>Users</Link>
                         </li>
                         <li>
-                            <Link className="link link-hover" href={ADMIN_MANAGEMENTS.PATH.ISSUES}>Issues</Link>
+                            <Link className="link link-hover" href={ADMIN_MANAGEMENTS.ISSUES.VIEW}>Issues</Link>
                         </li>
                         <li>
-                            <Link className="link link-hover" href={ADMIN_MANAGEMENTS.PATH.PRODUCTS}>Manage Product</Link>
+                            <Link className="link link-hover" href={ADMIN_MANAGEMENTS.PRODUCTS.VIEW}>Manage Product</Link>
                         </li>
                     </ul>
                 </nav>

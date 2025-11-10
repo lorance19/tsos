@@ -19,7 +19,7 @@ function Page() {
                         <CiSearch />
                         <input type="search" required placeholder="Search" />
                     </label>
-                    <Link className="btn btn-primary rounded-full" href={ADMIN_MANAGEMENTS.PATH.ADD_USER}><IoMdPersonAdd className="text-xl"/></Link>
+                    <Link className="btn btn-primary rounded-full" href={ADMIN_MANAGEMENTS.ADD_USER.VIEW}><IoMdPersonAdd className="text-xl"/></Link>
                 </div>
             </div>
             <div className="card bg-base-100 shadow-sm w-full m-2 p-2">

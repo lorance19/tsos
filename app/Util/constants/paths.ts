@@ -2,23 +2,21 @@ export const LOGIN_URL = '/View/login';
 export const UNAUTH_URL = '/View/unauthorized';
 
 export const SIGN_UP = {
-    VIEW_PATH : '/View/signUp',
-    API_PATH: '/auth/signUp'
+    VIEW : '/View/signUp',
+    API: '/auth/signUp'
 };
 
 export const USER_PROFILE = {
-    VIEW_PATH : '/View/userProfile',
+    VIEW : '/View/userProfile',
 }
 export const LOGOUT = {
-    VIEW_PATH : '/View/logout',
-    API_PATH: '/api/logout'
+    VIEW : '/View/logout',
+    API: '/api/logout'
 };
 
 export const ADMIN_MANAGEMENTS = {
-    PATH: {
-        USERS: '/admin/management/users',
-        ADD_USER: '/admin/management/addNewUser',
-        ISSUES: '/admin/management/issues',
-        PRODUCTS: '/admin/management/products'
-    }
+    USERS: { VIEW: "/admin/management/users"},
+    ADD_USER: { VIEW: "/admin/management/users/addNewUser" , API: "/api/admin/addUser" },
+    ISSUES: { VIEW: "/admin/management/issues"},
+    PRODUCTS: { VIEW: "/admin/management/products"},
 }
