@@ -11,14 +11,16 @@ import SubmitButton from "@/app/View/Component/SubmitButton";
 import UnexpectedError from "@/app/View/Component/UnexpectedError";
 import {useToastNotifications} from "@/app/Util/toast";
 import ErrorMessage from "@/app/View/Component/ErrorMessage";
-import {useCreateUser, useSignUpUser} from "@/app/busniessLogic/User/userManager";
+import {GET_ALL_USERS_QUERY_KEY, useCreateUser, useSignUpUser} from "@/app/busniessLogic/User/userManager";
 import SuccessToast from "@/app/View/Component/SuccessToast";
 import {Role} from "@prisma/client";
 import _ from "lodash";
+import {useQueryClient} from "@tanstack/react-query";
 
 type AddNewUserForm = z.infer<typeof adminAddUserSchema>;
 
 function AddNewUser() {
+    const queryClient = useQueryClient();
     const router = useRouter();
     const DELAY = 2000;
     const { register, handleSubmit, reset, formState: { errors } } = useForm<AddNewUserForm>({
@@ -33,9 +35,10 @@ function AddNewUser() {
             onSuccess: () => {
                 showSuccess('Registration successful!');
                 reset(); // Clear form on success
-                setTimeout(() => {
-                    router.refresh();
-                }, DELAY);
+                queryClient.invalidateQueries({queryKey: [GET_ALL_USERS_QUERY_KEY]})
+                    .then(r => setTimeout(() => {
+                        router.refresh();
+                    }, DELAY));
             },
             onError: (error) => {
                 const errorMessage = extractValidationError(error);

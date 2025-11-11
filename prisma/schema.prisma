@@ -25,6 +25,10 @@ model User {
   addressId          String?
   profilePicturePath String?
   createdBy          IdAndRole?
+  isActive           Boolean    @default(true)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  login              Login?
 }
 
 type IdAndRole {
@@ -66,11 +70,12 @@ model Address {
 
 model Login {
   id                   String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId               String
+  userId               String  @unique @db.ObjectId
   role                 Role
   userName             String?
   password             String
   communicationChannel String?
+  user                 User?   @relation(fields: [userId], references: [id])
 }
 
 model Issue {

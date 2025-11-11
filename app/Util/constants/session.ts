@@ -79,6 +79,69 @@ export async function refreshSession(): Promise<void> {
     }
 }
 
+export class Credential {
+    private user: IdAndRole | null;
+
+    private constructor(user: IdAndRole | null) {
+        this.user = user;
+    }
+
+    static async init(): Promise<Credential> {
+        const user = await getCredential();
+        return new Credential(user);
+    }
+
+    isLoggedIn(): boolean {
+        return this.user !== null;
+    }
+
+    isRoot(): boolean {
+        return this.user?.role === Role.ROOT;
+    }
+
+    isAdmin(): boolean {
+        return this.user?.role === Role.ADMIN;
+    }
+
+    isUser(): boolean {
+        return this.user?.role === Role.USER;
+    }
+
+    hasRole(role: Role): boolean {
+        return this.user?.role === role;
+    }
+
+    hasAnyRole(roles: Role[]): boolean {
+        return this.user ? roles.includes(this.user.role) : false;
+    }
+
+    getUserId(): string | undefined {
+        return this.user?.userId;
+    }
+
+    getRole(): Role | undefined {
+        return this.user?.role;
+    }
+
+    getUser(): IdAndRole | null {
+        return this.user;
+    }
+
+    requireAuth(): IdAndRole {
+        if (!this.user) {
+            throw new Error('Unauthorized');
+        }
+        return this.user;
+    }
+
+    requireRole(role: Role): IdAndRole {
+        const user = this.requireAuth();
+        if (user.role !== role) {
+            throw new Error('Forbidden');
+        }
+        return user;
+    }
+}
 
 
 

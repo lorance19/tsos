@@ -1,9 +1,8 @@
 import {z} from "zod";
 import {adminAddUserSchema, createUserSchema} from "@/app/busniessLogic/User/userValidation";
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQuery} from "@tanstack/react-query";
 import axios from "axios";
-import {ADMIN_MANAGEMENTS, SIGN_UP} from "@/app/Util/constants/paths";
-import prisma from "@/prisma/client";
+import {ADMIN_MANAGEMENTS, SIGN_UP, USER_PROFILE} from "@/app/Util/constants/paths";
 import {LoginForm} from "@/app/View/login/page";
 import {getUser} from "@/app/auth/login";
 
@@ -37,9 +36,6 @@ export function useCreateUser() {
     })
 }
 
-export async function findUserById(userId: string) {
-    return prisma.user.findUnique({where: {id: userId}});
-}
 
 export function userLogin() {
     return useMutation({
@@ -48,3 +44,27 @@ export function userLogin() {
         }
     });
 }
+export function useGetUserById(userId: string) {
+    return useQuery({
+        queryKey: [GET_USER_BY_ID_QUERY_KEY + userId],
+        queryFn: async() => {
+            const res = await axios.get(USER_PROFILE.API + userId);
+            return res.data;
+        },
+        enabled: !!userId, // Only fetch if userId exists
+    })
+}
+
+export function useGetAllUsers() {
+    return useQuery({
+        queryKey: [GET_ALL_USERS_QUERY_KEY],
+        queryFn: async() => {
+            const res = await axios.get(ADMIN_MANAGEMENTS.USERS.API)
+            return res.data;
+        },
+        staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    })
+}
+
+export const GET_ALL_USERS_QUERY_KEY = "users";
+export const GET_USER_BY_ID_QUERY_KEY = "user-";

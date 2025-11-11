@@ -1,6 +1,6 @@
 import {z} from "zod";
 import {adminAddUserSchema, createUserSchema} from "@/app/busniessLogic/User/userValidation";
-import {IdAndRole, Role} from "@prisma/client";
+import {IdAndRole, Role, User} from "@prisma/client";
 import prisma from "@/prisma/client";
 import {hash} from "bcryptjs";
 import _ from "lodash";
@@ -15,6 +15,10 @@ export class UserCreationError extends Error {
     }
 }
 
+export async function findUserById(userId: string) {
+    return prisma.user.findUnique({where: {id: userId}});
+}
+
 async function isExistingEmail(email: string ) {
     const isExistingEmail = await prisma.login.count({
         where: { communicationChannel: email }
@@ -27,6 +31,40 @@ async function isExistingUsername(userName: string ) {
         where: { communicationChannel: userName }
     });
     return isExistingUserName > 0;
+}
+
+export async function getUserById(id: string) {
+    return prisma.user.findUnique({
+        where: { id: id},
+        include: {
+            login: {
+                select: {
+                    userName: true,
+                    communicationChannel: true,
+                }
+            }
+        }
+    });
+}
+
+export async function getAllUsersExceptId(cred: IdAndRole) {
+    return prisma.user.findMany({
+        where: {
+            isActive: true,
+            id: {not: cred!.userId}
+        },
+        include: {
+            login: {
+                select: {
+                    userName: true,
+                    communicationChannel: true,
+                }
+            }
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
 }
 
 export async function createUserByAdmin(bean: AddUserForm, createdBy: IdAndRole | null) {

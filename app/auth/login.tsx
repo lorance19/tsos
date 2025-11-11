@@ -3,7 +3,7 @@ import {createSession} from "@/app/Util/constants/session";
 import {LoginForm} from "@/app/View/login/page";
 import bcrypt from "bcryptjs";
 import prisma from "@/prisma/client";
-import {findUserById} from "@/app/busniessLogic/User/userManager";
+import {findUserById} from "@/app/services/UserService";
 
 //Signup route
 export async function getUser(data: LoginForm) {
