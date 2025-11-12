@@ -44,6 +44,7 @@ export function userLogin() {
         }
     });
 }
+
 export function useGetUserById(userId: string) {
     return useQuery({
         queryKey: [GET_USER_BY_ID_QUERY_KEY + userId],
@@ -64,6 +65,19 @@ export function useGetAllUsers() {
         },
         staleTime: 1000 * 60 * 5, // Cache for 5 minutes
     })
+}
+
+export function useDeleteUser() {
+    return useMutation({
+        mutationFn: async (userId: string) => {
+            const res = await axios.delete(`${ADMIN_MANAGEMENTS.USERS.API}/${userId}`);
+            if (res.status === 200) {
+                return res.data;
+            } else {
+                throw new Error(res.data.error || "Failed to delete user");
+            }
+        }
+    });
 }
 
 export const GET_ALL_USERS_QUERY_KEY = "users";

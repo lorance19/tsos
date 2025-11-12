@@ -6,8 +6,18 @@ export const SIGN_UP = {
     API: '/auth/signUp'
 };
 
+export const LOGIN_SUCCESS = {
+    API: '/auth/login'
+};
+
+
 export const USER_PROFILE = {
     VIEW : '/View/userProfile',
+    API: '/api/admin/user/'
+}
+
+export const USER_PROFILE_ADMIN_VIEW = {
+    VIEW : '/admin/management/users/userProfile/',
     API: '/api/admin/user/'
 }
 export const LOGOUT = {

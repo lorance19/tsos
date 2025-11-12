@@ -3,12 +3,15 @@ import React from 'react';
 import {useGetUserById} from "@/app/busniessLogic/User/userManager";
 import { AxiosError } from 'axios';
 import Unexpected from "@/app/View/unexpectedError/page";
+import _ from "lodash";
+import {useAuth} from "@/app/auth/context";
 
 interface UserProfileProps {
     id: string
 }
 
 function UserProfileMain({id}: UserProfileProps) {
+
     const { data: user, isLoading, error } = useGetUserById(id);
     if (isLoading) {
         return <p>Loading Profile ... </p>
@@ -20,7 +23,7 @@ function UserProfileMain({id}: UserProfileProps) {
 
     return (
         <div className="p-8">
-            <h1 className="text-2xl font-bold mb-4">User Profile</h1>
+            <h1 className="text-2xl font-bold mb-4">Username: {}</h1>
             <div className="space-y-2">
                 <p><strong>User ID:</strong> {id}</p>
                 {/* Display fetched profile data */}

@@ -4,6 +4,7 @@ import {LoginForm} from "@/app/View/login/page";
 import bcrypt from "bcryptjs";
 import prisma from "@/prisma/client";
 import {findUserById} from "@/app/services/UserService";
+import {updateLoginTime} from "@/app/services/LoginService";
 
 //Signup route
 export async function getUser(data: LoginForm) {
@@ -22,6 +23,7 @@ export async function getUser(data: LoginForm) {
    await createSession({userId: user.id, role: user.role, name: (user.firstName || user.lastName)
           ? `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()
           : null})
+   await updateLoginTime(user.id);
    return existingUser;
 }
 

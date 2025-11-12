@@ -144,3 +144,30 @@ export async function createUser(bean: UserForm, role: Role) {
         login: user
     };
 }
+
+export async function deleteUser(userId: string, deletedBy: IdAndRole | null) {
+    if (!deletedBy || (deletedBy.role !== Role.ADMIN && deletedBy.role !== Role.ROOT)) {
+        throw new Error("You are not authorized to delete users");
+    }
+
+    // Prevent deleting ROOT users
+    const user = await prisma.user.findUnique({
+        where: { id: userId }
+    });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.role === Role.ROOT) {
+        throw new Error("ROOT users cannot be deleted");
+    }
+
+    // Soft delete by setting isActive to false
+    const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: { isActive: false }
+    });
+
+    return updatedUser;
+}
