@@ -1,7 +1,9 @@
 import {NextRequest, NextResponse} from "next/server";
-import {deleteUser, getUserById} from "@/app/services/UserService";
+import {deleteUser, getUserById, updateUser, UserCreationError} from "@/app/services/UserService";
 import {Credential} from "@/app/Util/constants/session";
 import {Role} from "@prisma/client";
+import {editUserSchema} from "@/app/busniessLogic/User/userValidation";
+import {makeZodError} from "@/app/Util/zodUtil";
 
 export async function GET(
     request: NextRequest,
@@ -34,6 +36,59 @@ export async function GET(
         return NextResponse.json(
             { error: (error as Error).message },
             { status: 403 }
+        );
+    }
+}
+
+export async function POST(
+    request: NextRequest,
+    context: { params: Promise<{ id: string }> }
+) {
+    const cred = await Credential.init();
+    const userMongoId = (await context.params).id;
+
+    if (!userMongoId) {
+        return NextResponse.json(
+            { error: "User ID is missing" },
+            { status: 400 }
+        );
+    }
+
+    try {
+        // Parse and validate request body
+        const body = await request.json();
+        const validationResult = editUserSchema.safeParse(body);
+
+        if (!validationResult.success) {
+            return NextResponse.json(
+                { error: validationResult.error.message },
+                { status: 400 }
+            );
+        }
+
+        // Update user with validated data
+        const updatedUser = await updateUser(
+            validationResult.data,
+            cred.getUser(),
+            userMongoId
+        );
+
+        return NextResponse.json(
+            { message: "User updated successfully", user: updatedUser },
+            { status: 200 }
+        );
+    } catch (error) {
+        // Handle field-specific validation errors
+        if (error instanceof UserCreationError) {
+            return NextResponse.json(
+                { error: makeZodError(error.field, error.message) },
+                { status: 400 }
+            );
+        }
+
+        return NextResponse.json(
+            { error: (error as Error).message },
+            { status: 400 }
         );
     }
 }

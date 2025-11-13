@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {adminAddUserSchema, createUserSchema} from "@/app/busniessLogic/User/userValidation";
+import {adminAddUserSchema, createUserSchema, editUserSchema} from "@/app/busniessLogic/User/userValidation";
 import {useMutation, useQuery} from "@tanstack/react-query";
 import axios from "axios";
 import {ADMIN_MANAGEMENTS, SIGN_UP, USER_PROFILE} from "@/app/Util/constants/paths";
@@ -9,6 +9,7 @@ import {getUser} from "@/app/auth/login";
 
 type UserForm = z.infer<typeof createUserSchema>;
 type CreateUserForm = z.infer<typeof adminAddUserSchema>;
+type EditUserForm = z.infer<typeof editUserSchema>;
 
 export function useSignUpUser() {
     return useMutation({
@@ -21,6 +22,19 @@ export function useSignUpUser() {
             }
         },
     });
+}
+
+export function useUpdateUser(userId: string) {
+    return useMutation({
+        mutationFn: async (data: EditUserForm) => {
+            const res = await axios.post(`${ADMIN_MANAGEMENTS.USERS.API}/${userId}`, data);
+            if (res.status === 200 || res.status === 201) {
+                return res.data;
+            } else {
+                throw new Error(res.statusText);
+            }
+        }
+    })
 }
 
 export function useCreateUser() {

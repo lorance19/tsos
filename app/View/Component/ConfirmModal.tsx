@@ -38,7 +38,7 @@ function ConfirmModal({isOpen, onConfirm, onCancel, modalProps}: ModalActionProp
     const disableSubmit = modalProps?.yes && !modalProps.disableSubmit;
     return (
         <dialog ref={dialogRef} className="modal modal-top">
-            <div className="modal-box modal-box max-w-sm mx-auto mt-6 rounded-xl">
+            <div className="modal-box max-w-sm mx-auto mt-6 rounded-xl">
                 {modalProps?.header && <h3 className="font-bold text-lg">{modalProps.header}</h3>}
                 <p className="py-4">{modalProps.message}</p>
                 <div className="modal-action">

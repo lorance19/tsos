@@ -23,7 +23,9 @@ function ManagementLayout({ children }: { children: React.ReactNode }) {
                 </nav>
             </aside>
             <RoleGuardComponent allowedRoles={[Role.ADMIN, Role.ROOT]}>
-                {children}
+                <div className="w-full">
+                    {children}
+                </div>
             </RoleGuardComponent>
         </div>
 

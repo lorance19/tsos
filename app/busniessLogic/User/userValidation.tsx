@@ -1,6 +1,7 @@
 
 import {z} from "zod";
 import {Role} from "@prisma/client";
+import {COUNTRY} from "@/app/Util/constants/country";
 
 const baseUserFieldsSchema = z.object({
     userName: z.string()
@@ -33,6 +34,28 @@ export const adminAddUserSchema = baseUserFieldsSchema.extend(
         role: roleEnum
     }
 )
+
+export const addressSchema = z.object({
+    street1: z.string().optional().nullable(),
+    street2: z.string().optional().nullable(),
+    zip : z.string()
+        .optional() // Field is optional
+        .nullable()
+        .refine((value) => {
+            if (value) {
+                return /^\d{5}(-\d{4})?$/.test(value); // US zip code format
+            }
+            return true;
+        }, 'Invalid zip code'),
+    city: z.string().optional().nullable(),
+    country : z.enum(COUNTRY, {
+        message: 'Invalid country selected',
+    }).optional().nullable()
+})
+
+export const editUserSchema = adminAddUserSchema.omit({ password: true }).extend({
+    address: addressSchema.optional()
+});
 
 export const createUserSchema = baseUserFieldsSchema.extend( {
     confirmPassword: z.string()
