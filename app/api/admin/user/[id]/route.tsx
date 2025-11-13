@@ -1,5 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
-import {deleteUser, getUserById, updateUser, UserCreationError} from "@/app/services/UserService";
+import {activateUser, deleteUser, getUserById, updateUser, UserCreationError} from "@/app/services/UserService";
 import {Credential} from "@/app/Util/constants/session";
 import {Role} from "@prisma/client";
 import {editUserSchema} from "@/app/busniessLogic/User/userValidation";
@@ -120,6 +120,60 @@ export async function DELETE(
         const deletedUser = await deleteUser(userMongoId, cred.getUser());
         return NextResponse.json(
             { message: "User deleted successfully", user: deletedUser },
+            { status: 200 }
+        );
+    } catch (error) {
+        return NextResponse.json(
+            { error: (error as Error).message },
+            { status: 400 }
+        );
+    }
+}
+
+export async function PATCH(
+    request: NextRequest,
+    context: { params: Promise<{ id: string }> }
+) {
+    const cred = await Credential.init();
+
+    // Check if user has ADMIN or ROOT role
+    if (!cred.hasAnyRole([Role.ADMIN, Role.ROOT])) {
+        return NextResponse.json(
+            { error: "Access denied" },
+            { status: 403 }
+        );
+    }
+
+    const userMongoId = (await context.params).id;
+
+    if (!userMongoId) {
+        return NextResponse.json(
+            { error: "User ID is missing" },
+            { status: 400 }
+        );
+    }
+
+    try {
+        // Parse request body to determine action
+        const body = await request.json();
+        const { isActive } = body;
+
+        if (typeof isActive !== 'boolean') {
+            return NextResponse.json(
+                { error: "isActive field is required and must be a boolean" },
+                { status: 400 }
+            );
+        }
+
+        // Call appropriate service function based on isActive value
+        const updatedUser = isActive
+            ? await activateUser(userMongoId, cred.getUser())
+            : await deleteUser(userMongoId, cred.getUser());
+
+        const message = isActive ? "User activated successfully" : "User deactivated successfully";
+
+        return NextResponse.json(
+            { message, user: updatedUser },
             { status: 200 }
         );
     } catch (error) {

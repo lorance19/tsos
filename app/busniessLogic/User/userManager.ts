@@ -81,14 +81,31 @@ export function useGetAllUsers() {
     })
 }
 
-export function useDeleteUser() {
+export function useDeactivateUser() {
     return useMutation({
         mutationFn: async (userId: string) => {
-            const res = await axios.delete(`${ADMIN_MANAGEMENTS.USERS.API}/${userId}`);
+            const res = await axios.patch(`${ADMIN_MANAGEMENTS.USERS.API}/${userId}`, {
+                isActive: false
+            });
             if (res.status === 200) {
                 return res.data;
             } else {
-                throw new Error(res.data.error || "Failed to delete user");
+                throw new Error(res.data.error || "Failed to deactivate user");
+            }
+        }
+    });
+}
+
+export function useActivateUser() {
+    return useMutation({
+        mutationFn: async (userId: string) => {
+            const res = await axios.patch(`${ADMIN_MANAGEMENTS.USERS.API}/${userId}`, {
+                isActive: true
+            });
+            if (res.status === 200) {
+                return res.data;
+            } else {
+                throw new Error(res.data.error || "Failed to activate user");
             }
         }
     });

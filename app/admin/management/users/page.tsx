@@ -5,7 +5,7 @@ import { CiSearch } from "react-icons/ci";
 import { IoMdPersonAdd } from "react-icons/io";
 import Link from "next/link";
 import {ADMIN_MANAGEMENTS, USER_PROFILE_ADMIN_VIEW} from "@/app/Util/constants/paths";
-import {useDeleteUser, useGetAllUsers} from "@/app/busniessLogic/User/userManager";
+import {useDeactivateUser, useGetAllUsers} from "@/app/busniessLogic/User/userManager";
 import {Role} from "@prisma/client";
 import {useQueryClient} from "@tanstack/react-query";
 import {GET_ALL_USERS_QUERY_KEY} from "@/app/busniessLogic/User/userManager";
@@ -31,7 +31,7 @@ function Page() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const queryClient = useQueryClient();
-    const deleteMutation = useDeleteUser();
+    const deleteMutation = useDeactivateUser();
     const { error: errorMessage, toastMessage, showError, showSuccess } = useToastNotifications();
 
     // Filter users based on search
@@ -147,7 +147,7 @@ function Page() {
                             </td>
                             <td>{user.phone || '-'}</td>
                             <td>
-                                <button className="btn btn-ghost btn-sm">Edit</button>
+                                <Link href={USER_PROFILE_ADMIN_VIEW.VIEW + user.id} className="btn btn-ghost btn-sm">Edit</Link>
                                 <button
                                     className="btn btn-ghost btn-sm text-error"
                                     onClick={() => handleDeleteClick(user)}

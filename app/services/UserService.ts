@@ -278,3 +278,24 @@ export async function deleteUser(userId: string, deletedBy: IdAndRole | null) {
         data: {isActive: false}
     });
 }
+
+export async function activateUser(userId: string, activatedBy: IdAndRole | null) {
+    if (!activatedBy || (activatedBy.role !== Role.ADMIN && activatedBy.role !== Role.ROOT)) {
+        throw new Error("You are not authorized to activate users");
+    }
+
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+        where: { id: userId }
+    });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    // Activate user by setting isActive to true
+    return prisma.user.update({
+        where: {id: userId},
+        data: {isActive: true}
+    });
+}

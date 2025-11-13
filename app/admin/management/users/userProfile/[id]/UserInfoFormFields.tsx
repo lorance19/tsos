@@ -5,6 +5,8 @@ import {editUserSchema} from "@/app/busniessLogic/User/userValidation";
 import {z} from "zod";
 import {COUNTRY} from "@/app/Util/constants/country";
 import {AiOutlineLoading3Quarters} from "react-icons/ai";
+import {IoCheckmarkCircleOutline} from "react-icons/io5";
+import {FaBan} from "react-icons/fa";
 
 type EditUserForm = z.infer<typeof editUserSchema>;
 
@@ -13,15 +15,18 @@ interface UserInfoFormFieldsProps {
     errors: FieldErrors<EditUserForm>;
     avatarUrl?: string;
     isSubmitting?: boolean;
+    onDeactivate?: () => void;
+    onActivate?: () => void;
+    isActive: boolean;
 }
 const COUNTRIES = Object.entries(COUNTRY).map(([key, value]) => ({
     name: key,
     code: value,
 }));
 
-function UserInfoFormFields({register, errors, avatarUrl, isSubmitting = false}: UserInfoFormFieldsProps) {
+function UserInfoFormFields({register, errors, avatarUrl, isSubmitting = false, onDeactivate, onActivate, isActive}: UserInfoFormFieldsProps) {
     return (
-        <fieldset className="fieldset border-base-300 rounded-box border p-4">
+        <fieldset className={`fieldset border-base-300 rounded-box border p-4 ${isActive ? "" : "border-red-600"}`}>
             <legend className="fieldset-legend">
                 <div className="avatar">
                     <div className="w-24 rounded-full">
@@ -31,7 +36,10 @@ function UserInfoFormFields({register, errors, avatarUrl, isSubmitting = false}:
                         />
                     </div>
                 </div>
-                <p className="text-xl">General info</p>
+                <div className="text-xl">General info
+                    {isActive && <div className="badge badge-success mx-2"><IoCheckmarkCircleOutline className="text-md"/>Active</div>}
+                    {!isActive && <div className="badge badge-error mx-2"><FaBan className="text-md"/>Inactive</div>}
+                </div>
             </legend>
 
             <div className="grid lg:grid-cols-4 md:grid-cols-4 sm:grid-cols-1 gap-2">
@@ -218,10 +226,10 @@ function UserInfoFormFields({register, errors, avatarUrl, isSubmitting = false}:
                     {isSubmitting ? (
                         <>
                             <AiOutlineLoading3Quarters className="animate-spin" />
-                            Saving...
+                            Saving update...
                         </>
                     ) : (
-                        'Save'
+                        'Update'
                     )}
                 </button>
                 <button
@@ -230,6 +238,22 @@ function UserInfoFormFields({register, errors, avatarUrl, isSubmitting = false}:
                     disabled={isSubmitting}
                 >
                     Reset Password
+                </button>
+                <button
+                    type="button"
+                    className={`btn bg-purple-400 ${isActive ? "" : "hidden btn-disabled"}`}
+                    disabled={isSubmitting}
+                    onClick={onDeactivate}
+                >
+                    Deactivate
+                </button>
+                <button
+                    type="button"
+                    className={`btn bg-success ${isActive ? "hidden btn-disabled" : ""}`}
+                    disabled={isSubmitting}
+                    onClick={onActivate}
+                >
+                    Activate
                 </button>
             </div>
         </fieldset>

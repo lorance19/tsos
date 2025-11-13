@@ -1,6 +1,12 @@
 'use client'
 import React, {useEffect, useState} from 'react';
-import {GET_USER_BY_ID_QUERY_KEY, useGetUserById, useUpdateUser} from "@/app/busniessLogic/User/userManager";
+import {
+    GET_USER_BY_ID_QUERY_KEY,
+    useActivateUser,
+    useDeactivateUser,
+    useGetUserById,
+    useUpdateUser
+} from "@/app/busniessLogic/User/userManager";
 import {editUserSchema} from "@/app/busniessLogic/User/userValidation";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
@@ -18,10 +24,13 @@ interface UserProfileProps {
     id: string
 }
 type editUserForm = z.infer<typeof editUserSchema>;
+type ActionType = 'update' | 'deactivate' | 'activate';
 
 function UserPersonalInfo({id}: UserProfileProps) {
     const queryClient = useQueryClient();
     const { data: user, isLoading } = useGetUserById(id);
+    const deleteMutation = useDeactivateUser();
+    const activateMutation = useActivateUser();
     const updateUserMutation = useUpdateUser(id);
     const {register, handleSubmit, formState: { errors }, reset} = useForm<editUserForm>({
         resolver: zodResolver(editUserSchema)
@@ -29,6 +38,7 @@ function UserPersonalInfo({id}: UserProfileProps) {
     const { error: toastError, toastMessage, showError, showSuccess } = useToastNotifications();
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [pendingData, setPendingData] = useState<editUserForm | null>(null);
+    const [actionType, setActionType] = useState<ActionType>('update');
 
     // Update form values when user data loads
     useEffect(() => {
@@ -51,32 +61,66 @@ function UserPersonalInfo({id}: UserProfileProps) {
         }
     }, [user, reset]);
 
-    // Show confirmation modal when form is submitted
+    // Show confirmation modal when form is submitted (Update)
     const onSubmit = (data: editUserForm) => {
         setPendingData(data);
+        setActionType('update');
         setIsConfirmOpen(true);
     };
 
-    // Handle confirmation - actually submit the data
+    // Show confirmation modal for deactivation
+    const handleDeactivateClick = () => {
+        setActionType('deactivate');
+        setIsConfirmOpen(true);
+    };
+
+    // Show confirmation modal for activation
+    const handleActivateClick = () => {
+        setActionType('activate');
+        setIsConfirmOpen(true);
+    };
+
+    // Handle confirmation - perform the action based on actionType
     const handleConfirm = async () => {
-        if (!pendingData) return;
-
         try {
-            await updateUserMutation.mutateAsync(pendingData);
+            if (actionType === 'update') {
+                if (!pendingData) return;
 
-            // Invalidate and refetch user data
-            await queryClient.invalidateQueries({
-                queryKey: [GET_USER_BY_ID_QUERY_KEY + id]
-            });
+                await updateUserMutation.mutateAsync(pendingData);
 
-            showSuccess("User updated successfully!");
+                // Invalidate and refetch user data
+                await queryClient.invalidateQueries({
+                    queryKey: [GET_USER_BY_ID_QUERY_KEY + id]
+                });
+
+                showSuccess("User updated successfully!");
+            } else if (actionType === 'deactivate') {
+                await deleteMutation.mutateAsync(id);
+
+                // Invalidate and refetch user data
+                await queryClient.invalidateQueries({
+                    queryKey: [GET_USER_BY_ID_QUERY_KEY + id]
+                });
+
+                showSuccess("User deactivated successfully!");
+            } else if (actionType === 'activate') {
+                await activateMutation.mutateAsync(id);
+
+                // Invalidate and refetch user data
+                await queryClient.invalidateQueries({
+                    queryKey: [GET_USER_BY_ID_QUERY_KEY + id]
+                });
+
+                showSuccess("User activated successfully!");
+            }
+
             setIsConfirmOpen(false);
             setPendingData(null);
         } catch (error: any) {
             const errorMessage = error?.response?.data?.error?.message ||
                                 error?.response?.data?.error ||
                                 error?.message ||
-                                "Failed to update user";
+                                `Failed to ${actionType} user`;
             showError(errorMessage);
             setIsConfirmOpen(false);
         }
@@ -86,6 +130,35 @@ function UserPersonalInfo({id}: UserProfileProps) {
     const handleCancel = () => {
         setIsConfirmOpen(false);
         setPendingData(null);
+    };
+
+    // Get modal content based on action type
+    const getModalProps = () => {
+        if (actionType === 'update') {
+            return {
+                header: "Confirm Update",
+                message: "Are you sure you want to update this user's information?",
+                yes: "Yes, Update",
+                no: "Cancel",
+                disableSubmit: updateUserMutation.isPending
+            };
+        } else if (actionType === 'deactivate') {
+            return {
+                header: "Confirm Deactivation",
+                message: `Are you sure you want to deactivate ${user?.firstName} ${user?.lastName}? This user will no longer be able to access the system.`,
+                yes: "Yes, Deactivate",
+                no: "Cancel",
+                disableSubmit: deleteMutation.isPending
+            };
+        } else {
+            return {
+                header: "Confirm Activation",
+                message: `Are you sure you want to activate ${user?.firstName} ${user?.lastName}? This user will regain access to the system.`,
+                yes: "Yes, Activate",
+                no: "Cancel",
+                disableSubmit: activateMutation.isPending
+            };
+        }
     };
 
     if (isLoading) {
@@ -98,22 +171,19 @@ function UserPersonalInfo({id}: UserProfileProps) {
             {toastMessage && <SuccessToast toastMessage={toastMessage}/>}
             <form onSubmit={handleSubmit(onSubmit)} className="sm:w-full lg:w-2/3">
                 <UserInfoFormFields
+                    isActive={user.isActive}
                     register={register}
                     errors={errors}
                     avatarUrl={user?.profilePicturePath}
-                    isSubmitting={updateUserMutation.isPending}
+                    isSubmitting={updateUserMutation.isPending || deleteMutation.isPending || activateMutation.isPending}
+                    onDeactivate={handleDeactivateClick}
+                    onActivate={handleActivateClick}
                 />
             </form>
 
             <ConfirmModal
                 isOpen={isConfirmOpen}
-                modalProps={{
-                    header: "Confirm Update",
-                    message: "Are you sure you want to update this user's information?",
-                    yes: "Yes, Update",
-                    no: "Cancel",
-                    disableSubmit: updateUserMutation.isPending
-                }}
+                modalProps={getModalProps()}
                 onConfirm={handleConfirm}
                 onCancel={handleCancel}
             />
