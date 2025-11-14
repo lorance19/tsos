@@ -90,48 +90,43 @@ model Issue {
 }
 
 model Product {
-  id             String      @id @default(auto()) @map("_id") @db.ObjectId
-  productId      String      @unique
-  path           String
-  createBy       IdAndRole
-  color          Color[]
-  price          Int
-  isOutofStock   Boolean     @default(false)
-  deal           Deals[]
-  description    String
-  type           ProductType
-  note           Note?
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  isDetailFilled Boolean     @default(false)
-}
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
 
-model ProductDetailView {
-  id                String           @id @default(auto()) @map("_id") @db.ObjectId
-  productId         String           @unique
-  color             Color[]
-  createBy          IdAndRole
+  // Basic Info (for landing page + detail)
+  name        String
+  type        ProductType
+  price       Int
+  isOutOfStock Boolean @default(false)
+  deals       Deals[]
+
+  // Images and Colors
+  mainImagePath    String
+  imageColorInfo   ImageColorInfo[]  // Each color has its own images
+
+  // Detail Page Only
   detailDescription String
-  rating            Float?
-  otherImagesPaths  String[]
-  imageColorInfo    ImageColorInfo[]
   careDescription   String
-  isOutOfStock      Boolean          @default(false)
-  note              Note?
-  isFreeShipping    Boolean          @default(true)
-  isCustomizable    Boolean          @default(false)
+  availableColors   Color[]
+  rating            Float?
+
+  // Shipping & Customization
+  isFreeShipping  Boolean @default(true)
+  isCustomizable  Boolean @default(false)
+
+  // Admin/Management
+  createdBy       IdAndRole
+  note            Note?
+  isDetailFilled  Boolean @default(false)
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum Status {
   OPEN
   IN_PROGRESS
   CLOSED
-}
-
-enum ProductKind {
-  CURTAIN
-  POLE
-  PILLOW
 }
 
 enum Deals {

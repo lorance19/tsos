@@ -78,7 +78,7 @@ function Page() {
     return (
         <div className="p-2 m-2 w-full">
             <div className="flex flex-row justify-between align-items-center">
-                <p className="flex items-center text-3xl font-semibold">
+                <p className="flex items-center text-2xl font-semibold">
                     <FaUser className="mx-2"/>
                     <span>Users</span>
                 </p>

@@ -26,8 +26,14 @@ export const LOGOUT = {
 };
 
 export const ADMIN_MANAGEMENTS = {
+    //User
     USERS: { VIEW: "/admin/management/users", API: "/api/admin/user"},
     ADD_USER: { VIEW: "/admin/management/users/addNewUser" , API: "/api/admin/user/addUser" },
+
     ISSUES: { VIEW: "/admin/management/issues"},
+
+    //Product
     PRODUCTS: { VIEW: "/admin/management/products"},
+    ADD_PRODUCT: { VIEW: "/admin/management/products/addNewProduct" , API: "/api/admin/product/addProduct" },
+
 }

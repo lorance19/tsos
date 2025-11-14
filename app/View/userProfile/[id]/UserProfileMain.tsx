@@ -3,8 +3,7 @@ import React from 'react';
 import {useGetUserById} from "@/app/busniessLogic/User/userManager";
 import { AxiosError } from 'axios';
 import Unexpected from "@/app/View/unexpectedError/page";
-import _ from "lodash";
-import {useAuth} from "@/app/auth/context";
+
 
 interface UserProfileProps {
     id: string
