@@ -53,7 +53,6 @@ export async function getUserById(id: string) {
 export async function getAllUsersExceptId(cred: IdAndRole) {
     return prisma.user.findMany({
         where: {
-            isActive: true,
             id: {not: cred!.userId}
         },
         include: {

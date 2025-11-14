@@ -20,6 +20,9 @@ export async function getUser(data: LoginForm) {
    if (!user) {
       throw new Error("Sorry, your account is removed");
    }
+   if (!user.isActive) {
+      throw new Error("You account has been deactivated. Please contact customer support for further information.");
+   }
    await createSession({userId: user.id, role: user.role, name: (user.firstName || user.lastName)
           ? `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()
           : null})

@@ -21,6 +21,7 @@ interface UserInfo {
     email: string;
     phone: string;
     role: Role;
+    isActive: boolean;
     login: { userName: string; };
 }
 
@@ -133,9 +134,12 @@ function Page() {
                     )}
 
                     {!isLoading && !error && filteredUsers.map((user: UserInfo, index: number) => (
-                        <tr key={index}>
+                        <tr key={index} className={`${user.isActive ? "" : "bg-red-100"}`}>
                             <th>{index + 1}</th>
-                            <td><Link className="link-secondary hover:link-primary" href={USER_PROFILE_ADMIN_VIEW.VIEW + user.id}>{user.firstName} {user.lastName}</Link></td>
+                            <td>
+                                <Link className={`${user.isActive ? "link-secondary" : "link-error"} hover:link-primary`} href={USER_PROFILE_ADMIN_VIEW.VIEW + user.id}>{user.firstName} {user.lastName}</Link>
+
+                            </td>
                             <td>{user.login?.userName || '-'}</td>
                             <td>{user.email}</td>
                             <td>
