@@ -69,7 +69,7 @@ function Nav() {
                         <Link href={link.href} key={link.href}
                               className={`
                                 ${link.hidden ? "hidden" : ""}
-                                ${link.href === currentPath ? "text-secondary" : "text-black" }
+                                ${currentPath.includes(link.href) ? "text-secondary" : "text-black" }
                               hover:text-secondary transition delay-70 duration-150 hover:scale-110`}
                         >
                             {link.label}
