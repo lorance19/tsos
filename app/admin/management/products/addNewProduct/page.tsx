@@ -20,10 +20,11 @@ import {useToastNotifications} from "@/app/Util/toast";
 import UnexpectedError from "@/app/View/Component/UnexpectedError";
 import SuccessToast from "@/app/View/Component/SuccessToast";
 import Image from "next/image";
+import {ProductType} from "@prisma/client";
 
 
 function AddNewProduct() {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<AddNewProductForm>({
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: zodResolver(addNewProductSchema),
     });
     const queryClient = useQueryClient();
@@ -108,6 +109,53 @@ function AddNewProduct() {
         setSecondaryImages(prev => prev.filter((_, i) => i !== index));
     };
 
+    // Handle form submission
+    const onSubmit = async (data: AddNewProductForm) => {
+        try {
+            // Prepare the form data with images
+            const formData = {
+                ...data,
+                imageValidation: {
+                    mainImage: primaryImage,
+                    secondaryImages: secondaryImages
+                        .filter(img => img.file !== null)
+                        .map(img => img.file as File)
+                }
+            };
+
+            // Validate the complete form data with Zod
+            const validation = addNewProductSchema.safeParse(formData);
+
+            if (!validation.success) {
+                // Show the first validation error
+                const firstError = validation.error.issues[0];
+                showError(firstError.message);
+                return;
+            }
+
+            // Call the create product mutation
+            await createProduct.mutateAsync(validation.data);
+
+            // Show success notification
+            showSuccess('Product created successfully!');
+
+            // Reset form and images
+            reset();
+            setPrimaryImage(null);
+            setPrimaryImagePreview('https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp');
+            setSecondaryImages([
+                { file: null, preview: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp' }
+            ]);
+
+            // Invalidate queries and redirect
+            await queryClient.invalidateQueries({ queryKey: ['products'] });
+            router.push(ADMIN_MANAGEMENTS.PRODUCTS.VIEW);
+        } catch (error) {
+            // Show error notification
+            showError((error as Error).message || 'Failed to create product');
+        }
+    };
+
     return (
         <div className=" m-2 p-1 w-full">
             <UnexpectedError errorMessage={error} />
@@ -119,7 +167,7 @@ function AddNewProduct() {
                     <li>Add New Product</li>
                 </ul>
             </div>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4 m-2">
                     <p className="text-xl font-semibold">New Product</p>
                     <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 gap-1">
@@ -134,12 +182,12 @@ function AddNewProduct() {
                                     type="text"
                                     placeholder="Product Name"
                                 />
-                                {errors.name && (
-                                    <small className="validator-hint visible my-0 text-error">
-                                        {errors.name.message}
-                                    </small>
-                                )}
                             </label>
+                            {errors.name?.message && (
+                                <small className="validator-hint visible my-0 text-error">
+                                    {errors.name.message}
+                                </small>
+                            )}
                         </div>
                         <div className="flex flex-col gap-1 px-2">
                             <label className="label">Product Code
@@ -152,27 +200,28 @@ function AddNewProduct() {
                                     type="text"
                                     placeholder="Product Code"
                                 />
-                                {errors.code && (
-                                    <small className="validator-hint visible my-0 text-error">
-                                        {errors.code.message}
-                                    </small>
-                                )}
                             </label>
+                            {errors.code && (
+                                <small className="validator-hint visible my-0 text-error">
+                                    {errors.code.message}
+                                </small>
+                            )}
                         </div>
                         <div className="flex flex-col gap-1 px-2">
                             <label className="label">Product Type</label>
                             <label className={`input validator w-full ${errors.type ? 'input-error' : ''}`}>
                                 <IoPricetagOutline size={20}/>
-                                <input
-                                    type="text"
-                                    placeholder="Product Type"
-                                />
-                                {errors.type && (
-                                    <small className="validator-hint visible my-0 text-error">
-                                        {errors.type.message}
-                                    </small>
-                                )}
+                                <select className="border-none w-full focus:outline-none focus:ring-0 focus:border-none" {...register("type")}>
+                                    {Object.values(ProductType).map((item, index) => (
+                                        <option key={index} value={item}>{item}</option>
+                                    ))}
+                                </select>
                             </label>
+                            {errors.type && (
+                                <small className="validator-hint visible my-0 text-error">
+                                    {errors.type.message}
+                                </small>
+                            )}
                         </div>
                         <div className="flex flex-col gap-1 px-2">
                             <label className="label">Price</label>
@@ -180,14 +229,15 @@ function AddNewProduct() {
                                 <CiDollar size={20}/>
                                 <input
                                     type="number"
+                                    {...register("price")}
                                     placeholder="Price tag"
                                 />
-                                {errors.price && (
-                                    <small className="validator-hint visible my-0 text-error">
-                                        {errors.price.message}
-                                    </small>
-                                )}
                             </label>
+                            {errors.price && (
+                                <small className="validator-hint visible my-0 text-error">
+                                    {errors.price.message}
+                                </small>
+                            )}
                         </div>
                         <div className="flex flex-col gap-1 px-2">
                             <label className="label">Inventory</label>
@@ -195,20 +245,21 @@ function AddNewProduct() {
                                 <BsBox size={20}/>
                                 <input
                                     type="number"
+                                    {...register("inventory")}
                                     placeholder="Inventory"
                                 />
-                                {errors.inventory && (
-                                    <small className="validator-hint visible my-0 text-error">
-                                        {errors.inventory.message}
-                                    </small>
-                                )}
                             </label>
+                            {errors.inventory && (
+                                <small className="validator-hint visible my-0 text-error">
+                                    {errors.inventory.message}
+                                </small>
+                            )}
                         </div>
                         <div className="flex flex-col gap-1 px-2">
                             <label className="label">Is Customizable</label>
                             <label className={`input validator w-full`}>
                                 <MdOutlineDashboardCustomize size={20}/>
-                                <select className="border-none w-full focus:outline-none focus:ring-0 focus:border-none">
+                                <select className="border-none w-full focus:outline-none focus:ring-0 focus:border-none" {...register("isCustomizable")}>
                                     <option value="true">Yes</option>
                                     <option value="false">No</option>
                                 </select>
@@ -243,7 +294,8 @@ function AddNewProduct() {
                                             type="file"
                                             accept="image/*"
                                             disabled={isPending}
-                                            className={`file-input file-input-primary flex-1 ${errors.imageValidation?.mainImage ? 'file-input-error' : ''}`}
+                                            {...register("imageValidation.mainImage")}
+                                            className={`file-input flex-1 ${errors.imageValidation?.mainImage ? "file-input-error" : "file-input-primary"}`}
                                             onChange={handlePrimaryImageChange}
                                         />
                                         {primaryImage && (
@@ -257,9 +309,9 @@ function AddNewProduct() {
                                             </button>
                                         )}
                                     </div>
-                                    {errors.imageValidation?.mainImage && (
+                                    {errors.imageValidation?.mainImage?.message && (
                                         <small className="text-error">
-                                            {errors.imageValidation.mainImage.message}
+                                            {String(errors.imageValidation.mainImage.message)}
                                         </small>
                                     )}
                                 </div>
@@ -293,7 +345,8 @@ function AddNewProduct() {
                                                 type="file"
                                                 accept="image/*"
                                                 disabled={isPending}
-                                                className={`file-input file-input-primary flex-1 ${errors.imageValidation?.secondaryImages?.[index] ? 'file-input-error' : ''}`}
+                                                {...register("imageValidation.secondaryImages")}
+                                                className={`file-input flex-1 ${errors.imageValidation?.secondaryImages?.[index] ? 'file-input-error' : 'file-input-primary'}`}
                                                 onChange={(e) => handleSecondaryImageChange(index, e)}
                                             />
                                             {image.file && (
@@ -349,7 +402,7 @@ function AddNewProduct() {
                     <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4">
                         <fieldset className="fieldset w-full">
                             <legend className="fieldset-legend">Detail Description</legend>
-                            <textarea className={`textarea h-50 w-full validator ${errors.detailDescription? 'input-error' : ''}"`} {...register('detailDescription')} placeholder="Detail Description"></textarea>
+                            <textarea className={`textarea h-50 w-full ${errors.detailDescription? 'textarea-error' : ''}`} {...register('detailDescription')} placeholder="Detail Description"></textarea>
                             {errors.detailDescription && (
                                 <small className="validator-hint visible my-0 text-error">
                                     {errors.detailDescription.message}
@@ -358,7 +411,7 @@ function AddNewProduct() {
                         </fieldset>
                         <fieldset className="fieldset w-full">
                             <legend className="fieldset-legend">Care Description</legend>
-                            <textarea className={`textarea h-50 w-full validator ${errors.careDescription? 'input-error' : ''}"`} {...register('careDescription')} placeholder="Care Description"></textarea>
+                            <textarea className={`textarea h-50 w-full validator ${errors.careDescription? 'input-error' : ''}`} {...register('careDescription')} placeholder="Care Description"></textarea>
                             {errors.careDescription && (
                                 <small className="validator-hint visible my-0 text-error">
                                     {errors.careDescription.message}
@@ -369,7 +422,9 @@ function AddNewProduct() {
                     </div>
                 </fieldset>
                 <div className="flex w-full justify-center">
-                    <button type="button" className="btn btn-lg btn-success m-2">Create Product</button>
+                    <button type="submit" className="btn btn-lg btn-success m-2" disabled={isPending}>
+                        {isPending ? 'Creating Product...' : 'Create Product'}
+                    </button>
                 </div>
             </form>
         </div>
