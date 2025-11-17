@@ -1,13 +1,12 @@
 'use client'
-import React, {useTransition} from 'react';
+import React, {} from 'react';
 import {NavLink} from "@/app/View/Component/utilties/NavLink";
 import Link from "next/link";
-import {usePathname, useRouter} from "next/navigation";
-import {LOGIN_URL, LOGOUT, SIGN_UP, USER_PROFILE} from "@/app/Util/constants/paths";
+import {usePathname,} from "next/navigation";
+import {LOGIN_URL, USER_PROFILE} from "@/app/Util/constants/paths";
 import {Role} from "@prisma/client";
 import {useAuth} from "@/app/auth/context";
-import {deleteSession} from "@/app/Util/constants/session";
-import {signOut} from "@/app/auth/logout";
+
 import SignOutButton from "@/app/View/Component/SignOutButton";
 
 function Nav() {

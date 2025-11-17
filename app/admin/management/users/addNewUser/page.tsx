@@ -48,7 +48,7 @@ function AddNewUser() {
     }
 
     return (
-        <div className=" m-2 p-2 w-full">
+        <div className=" m-2 p-2 lg:w-1/2 sm:w-full xs:w-full">
             <UnexpectedError errorMessage={error} />
             {toastMessage && <SuccessToast toastMessage ={toastMessage}/>}
             <div className="breadcrumbs text-sm">
@@ -57,9 +57,10 @@ function AddNewUser() {
                     <li>Add New User</li>
                 </ul>
             </div>
-            <p className="text-xl font-semibold">Add New User</p>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="grid md:grid-cols-2 sm:grid-cols-1 w-1/2 gap-1">
+                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
+                    <p className="text-xl font-semibold">Add New User</p>
+                    <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-1">
                     <fieldset className="fieldset">
                         <legend className="fieldset-legend">First Name</legend>
                         <input type="text" className="input" placeholder="John" {...register('firstName')}/>
@@ -105,8 +106,11 @@ function AddNewUser() {
                         </select>
                         <ErrorMessage>{errors.role?.message}</ErrorMessage>
                     </fieldset>
+                    <div></div>
+                    <SubmitButton className="my-5" isSubmitting={isPending} text={"Create New User"}/>
                 </div>
-                <SubmitButton className="my-5" isSubmitting={isPending} text={"Create New User"}/>
+
+                </fieldset>
             </form>
         </div>
     );

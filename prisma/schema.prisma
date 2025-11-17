@@ -90,37 +90,37 @@ model Issue {
 }
 
 model Product {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   // Basic Info (for landing page + detail)
-  name        String
-  type        ProductType
-  price       Int
-  isOutOfStock Boolean @default(false)
-  deals       Deals[]
+  name         String
+  type         ProductType
+  price        Int
+  isOutOfStock Boolean     @default(false)
+  deals        Deals[]
 
   // Images and Colors
-  mainImagePath    String
-  imageColorInfo   ImageColorInfo[]  // Each color has its own images
+  mainImagePath  String
+  imageColorInfo ImageColorInfo[] // Each color has its own images
 
   // Detail Page Only
   detailDescription String
   careDescription   String
   availableColors   Color[]
   rating            Float?
+  code              String?
+  inventory         Int
 
-  // Shipping & Customization
-  isFreeShipping  Boolean @default(true)
-  isCustomizable  Boolean @default(false)
+  isCustomizable Boolean @default(false)
 
   // Admin/Management
-  createdBy       IdAndRole
-  note            Note?
-  isDetailFilled  Boolean @default(false)
+  createdBy      IdAndRole
+  note           Note?
+  isDetailFilled Boolean   @default(false)
 
   // Timestamps
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Status {

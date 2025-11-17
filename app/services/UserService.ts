@@ -115,7 +115,7 @@ export async function createUser(bean: UserForm, role: Role) {
     }
 
     if (await isExistingEmail(bean.email)) {
-        throw new UserCreationError('email', "A user with this email already exists");
+        throw new UserCreationError("email", "A user with this email already exists");
     }
 
     if (await isExistingUsername(bean.userName)) {
