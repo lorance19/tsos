@@ -1,0 +1,148 @@
+[
+  {
+    "name": "Premium Velvet Curtain - Navy Blue",
+    "code": "CUR-001-NB",
+    "type": "CURTAIN",
+    "price": 12999,
+    "inventory": 50,
+    "isCustomizable": true,
+    "detailDescription": "Luxurious velvet curtains that add elegance to any room. Made from high-quality polyester velvet with a soft, plush texture. Features thermal insulation properties to keep your room warm in winter and cool in summer. Available in various sizes and comes with easy-to-install grommets.",
+    "careDescription": "Machine wash cold on gentle cycle. Tumble dry low. Do not bleach. Iron on low heat if needed.",
+    "mainImagePath": "/placeholder/curtain-navy-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/curtain-navy-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/curtain-navy-detail1.jpg",
+          "/placeholder/curtain-navy-detail2.jpg",
+          "/placeholder/curtain-navy-room.jpg"
+        ]
+      }
+    ],
+    "deals": ["NEW", "TEN_OFF"],
+    "rating": 4.5,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Modern Curtain Rod Set - Brushed Nickel",
+    "code": "HW-002-BN",
+    "type": "HARDWARE",
+    "price": 4999,
+    "inventory": 100,
+    "isCustomizable": false,
+    "detailDescription": "Professional-grade curtain rod set with a sleek brushed nickel finish. Includes adjustable rod (48-84 inches), mounting brackets, screws, and decorative finials. Supports up to 20 lbs. Easy to install with included instructions and all necessary hardware.",
+    "careDescription": "Wipe clean with a soft, dry cloth. Do not use abrasive cleaners.",
+    "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/rod-nickel-close.jpg",
+          "/placeholder/rod-nickel-install.jpg"
+        ]
+      }
+    ],
+    "deals": ["FIFTEEN_OFF"],
+    "rating": 4.8,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Decorative Throw Pillow - Geometric Pattern",
+    "code": "PIL-003-GEO",
+    "type": "PILLOW",
+    "price": 2999,
+    "inventory": 75,
+    "isCustomizable": true,
+    "detailDescription": "Stylish decorative pillow featuring a modern geometric pattern. Made with premium cotton canvas cover and filled with hypoallergenic polyester fiber. Perfect for adding a pop of style to your sofa, bed, or chair. Includes hidden zipper for easy cover removal.",
+    "careDescription": "Remove cover and machine wash cold. Tumble dry low or air dry. Do not wash pillow insert.",
+    "mainImagePath": "/placeholder/pillow-geo-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/pillow-geo-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/pillow-geo-back.jpg",
+          "/placeholder/pillow-geo-styled.jpg",
+          "/placeholder/pillow-geo-detail.jpg"
+        ]
+      }
+    ],
+    "deals": ["NEW", "TWENTY_OFF"],
+    "rating": 4.3,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Blackout Curtain Panel - Classic White",
+    "code": "CUR-004-WH",
+    "type": "CURTAIN",
+    "price": 8999,
+    "inventory": 120,
+    "isCustomizable": true,
+    "detailDescription": "High-quality blackout curtain panels that block up to 99% of light and UV rays. Triple-weave construction provides excellent noise reduction and energy efficiency. Perfect for bedrooms, nurseries, or home theaters. Rod pocket design fits standard curtain rods up to 2 inches.",
+    "careDescription": "Machine wash cold separately. Hang dry or tumble dry on low. Do not bleach.",
+    "mainImagePath": "/placeholder/curtain-white-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/curtain-white-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/curtain-white-texture.jpg",
+          "/placeholder/curtain-white-hanging.jpg"
+        ]
+      }
+    ],
+    "deals": ["BUY_1_GET_1"],
+    "rating": 4.7,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Adjustable Curtain Brackets - Heavy Duty",
+    "code": "HW-005-HD",
+    "type": "HARDWARE",
+    "price": 1999,
+    "inventory": 200,
+    "isCustomizable": false,
+    "detailDescription": "Heavy-duty adjustable curtain rod brackets designed for durability and strength. Made from solid steel with powder-coated finish. Adjustable projection from 3 to 5 inches. Each bracket supports up to 40 lbs. Includes mounting screws and anchors for drywall installation.",
+    "careDescription": "Wipe with damp cloth if needed. Avoid harsh chemicals.",
+    "mainImagePath": "/placeholder/bracket-hd-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/bracket-hd-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/bracket-hd-side.jpg",
+          "/placeholder/bracket-hd-mounted.jpg"
+        ]
+      }
+    ],
+    "deals": [],
+    "rating": 4.6,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Luxury Memory Foam Pillow - Premium Comfort",
+    "code": "PIL-006-MEM",
+    "type": "PILLOW",
+    "price": 5999,
+    "inventory": 0,
+    "isCustomizable": false,
+    "detailDescription": "Premium memory foam pillow designed for ultimate comfort and support. Contoured design supports neck and spine alignment. Hypoallergenic and dust mite resistant. Includes breathable bamboo cover that's soft and moisture-wicking. Standard size fits all pillowcases.",
+    "careDescription": "Spot clean pillow only. Machine wash cover in cold water and tumble dry low.",
+    "mainImagePath": "/placeholder/pillow-memory-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/pillow-memory-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/pillow-memory-profile.jpg",
+          "/placeholder/pillow-memory-cover.jpg"
+        ]
+      }
+    ],
+    "deals": ["FIFTY_OFF"],
+    "rating": 4.9,
+    "isOutOfStock": true,
+    "isDetailFilled": true
+  }
+]

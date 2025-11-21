@@ -32,21 +32,8 @@ const fileValidator = z.any()
     });
 
 const imageSetSchema = z.object({
-    mainImage: z.any()
-        .refine((file) => file instanceof File, {
-            message: "Main image is required"
-        })
-        .refine((file) => file instanceof File && file.size > 0, {
-            message: "Main image must not be empty"
-        })
-        .refine((file) => file instanceof File && file.size <= MAX_FILE_SIZE, {
-            message: "Main image size must be less than 5MB"
-        })
-        .refine((file) => file instanceof File && ALLOWED_IMAGE_TYPES.includes(file.type), {
-            message: "Main image must be JPEG, PNG, WebP, or GIF format"
-        }),
-    // color: z.enum(Color, { message: "Please select a valid color" }),
-    secondaryImages: z.array(fileValidator).optional()
+    mainImage: z.any().optional(),
+    secondaryImages: z.any().optional()
 });
 
 // Base schema for common product detail fields

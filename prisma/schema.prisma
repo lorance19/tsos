@@ -54,7 +54,7 @@ type Note {
 
 type ImageColorInfo {
   secondaryImagesPaths String[]
-  colorInfo            Color
+  colorInfo            Color?
   mainImagePath        String
 }
 
@@ -106,9 +106,8 @@ model Product {
   // Detail Page Only
   detailDescription String
   careDescription   String
-  availableColors   Color[]
   rating            Float?
-  code              String?
+  code              String @unique
   inventory         Int
 
   isCustomizable Boolean @default(false)

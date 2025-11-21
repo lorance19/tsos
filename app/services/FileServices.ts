@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-function getExtensionFromContentType(contentType: string): string {
+export function getExtensionFromContentType(file: File): string {
     const mimeToExt: { [key: string]: string } = {
         'image/jpeg': '.jpg',
         'image/jpg': '.jpg',
@@ -13,7 +13,7 @@ function getExtensionFromContentType(contentType: string): string {
         'text/plain': '.txt',
         'application/json': '.json',
     };
-    return mimeToExt[contentType] || '';
+    return mimeToExt[file.type] || '';
 }
 
 export class FileUploadError extends Error {
@@ -23,46 +23,57 @@ export class FileUploadError extends Error {
     }
 }
 
-
-export async function saveFileDevelopmentEnv(formData: FormData) {
-    if (process.env.NODE_ENV !== 'development') {
-        throw new FileUploadError("Only Development environment can be called this function");
-    }
-    try {
-        const file = formData.get('file') as File;
-        const fileName = formData.get('filename') as string;
-        const contentType = formData.get('contentType') as string;
-        var additionalDir = formData.get('additionalDir') as string;
-        if (!additionalDir) {
-            additionalDir = ""
-        }
-        const extension = getExtensionFromContentType(contentType || file.type);
-        const timestamp = Date.now();
-        const randomNum = Math.floor(Math.random() * 1000);
+export function getImageStorePath(file: File, additionalDir: string): string {
+    if (process.env.NODE_ENV === 'development') {
         const pathToSave: { [key: string]: string } = {
-            '.jpg' : "images/",
-            '.png' : "images/",
-            '.gif' : "gifs/",
-            '.webp' : "images/",
-            '.svg' : "vectors/",
-            '.pdf' : "docs/",
-            '.txt' : "docs",
-            '.json' : "docs/"
+            '.jpg': "images/",
+            '.png': "images/",
+            '.gif': "gifs/",
+            '.webp': "images/",
+            '.svg': "vectors/",
+            '.pdf': "docs/",
+            '.txt': "docs",
+            '.json': "docs/"
         };
-        const finalFileName = `${timestamp}_${randomNum}${extension}`
-        const uploadDir = path.join(process.cwd(), 'public/' + pathToSave[extension] + additionalDir);
+        const extension = getExtensionFromContentType(file);
+        return path.join(process.cwd(), "public/" + pathToSave[extension] + additionalDir);
+    } else {
+        return ""; // This is for production env
+    }
+}
+
+export async function saveImage(image: File, dir: string, filename: string): Promise<string> {
+    try {
+        if (!dir) {
+            dir = ""
+        }
+        const uploadDir = getImageStorePath(image, dir);
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
-        const bytes = await file.arrayBuffer();
+        const bytes = await image.arrayBuffer();
         const buffer = Buffer.from(bytes);
-        const filepath = path.join(uploadDir, finalFileName);
+        const extension = getExtensionFromContentType(image);
+        const filepath = path.join(uploadDir, filename) + extension;
         fs.writeFileSync(filepath, buffer);
-        console.log(`[Development] File saved: ${finalFileName} (${contentType})`);
+        console.log(`[Development] File saved: ${filename} (${extension})`);
+        return filepath;
     } catch (err) {
         console.log(err);
         throw new FileUploadError("Failed to upload file");
     }
+}
 
-
+export function deleteImages(imagePaths: string[]): void {
+    try {
+        for (const imagePath of imagePaths) {
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+                console.log(`[Development] File deleted: ${imagePath}`);
+            }
+        }
+    } catch (err) {
+        console.error('Error deleting images:', err);
+        throw new FileUploadError("Failed to delete images");
+    }
 }

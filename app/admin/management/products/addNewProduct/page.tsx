@@ -10,21 +10,22 @@ import {FaBarcode} from "react-icons/fa";
 import {MdOutlineDashboardCustomize} from "react-icons/md";
 import {BsBox} from "react-icons/bs";
 import {addNewProductSchema} from "@/app/busniessLogic/Product/productValidation";
-import {useForm} from "react-hook-form";
+import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {AddNewProductForm} from "@/app/services/ProductService";
 import {useQueryClient} from "@tanstack/react-query";
 import {useRouter} from "next/navigation";
-import {useCreateProduct} from "@/app/busniessLogic/Product/productManager";
+import {GET_ALL_PRODUCTS_QUERY_KEY, useCreateProduct} from "@/app/busniessLogic/Product/productManager";
 import {useToastNotifications} from "@/app/Util/toast";
 import UnexpectedError from "@/app/View/Component/UnexpectedError";
 import SuccessToast from "@/app/View/Component/SuccessToast";
 import Image from "next/image";
 import {ProductType} from "@prisma/client";
 
+//TODO: This file is needs to be refactored!!!
 
 function AddNewProduct() {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    const { register, handleSubmit, reset, formState: { errors }, setError } = useForm({
         resolver: zodResolver(addNewProductSchema),
     });
     const queryClient = useQueryClient();
@@ -44,18 +45,6 @@ function AddNewProduct() {
 
     const MAX_SECONDARY_IMAGES = 6;
 
-    // Handle primary image selection
-    const handlePrimaryImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setPrimaryImage(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPrimaryImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
 
     // Handle secondary image selection
     const handleSecondaryImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,14 +72,6 @@ function AddNewProduct() {
         }
     };
 
-    // Delete primary image
-    const handleDeletePrimaryImage = () => {
-        setPrimaryImage(null);
-        setPrimaryImagePreview('https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp');
-        // Reset the file input
-        const fileInput = document.getElementById('primary-image-input') as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
-    };
 
     // Clear uploaded image (keeps the card)
     const handleClearSecondaryImage = (index: number) => {
@@ -110,46 +91,65 @@ function AddNewProduct() {
     };
 
     // Handle form submission
-    const onSubmit = async (data: AddNewProductForm) => {
+    const onSubmit: SubmitHandler<AddNewProductForm>  =  (data: AddNewProductForm) => {
+        // Validate primary image manually
+        if (!primaryImage) {
+            setError('imageValidation.mainImage', {
+                type: 'manual',
+                message: 'Main image is required'
+            });
+            return;
+        }
+
         try {
-            // Prepare the form data with images
-            const formData = {
-                ...data,
-                imageValidation: {
-                    mainImage: primaryImage,
-                    secondaryImages: secondaryImages
-                        .filter(img => img.file !== null)
-                        .map(img => img.file as File)
-                }
-            };
+            // Build FormData for multipart upload
+            const formData = new FormData();
 
-            // Validate the complete form data with Zod
-            const validation = addNewProductSchema.safeParse(formData);
+            // Add regular fields
+            formData.append('name', data.name);
+            formData.append('code', data.code);
+            formData.append('type', data.type);
+            formData.append('price', data.price.toString());
+            formData.append('inventory', data.inventory.toString());
+            formData.append('isCustomizable', data.isCustomizable.toString());
+            formData.append('detailDescription', data.detailDescription);
+            formData.append('careDescription', data.careDescription);
+            if (data.note) formData.append('note', data.note);
 
-            if (!validation.success) {
-                // Show the first validation error
-                const firstError = validation.error.issues[0];
-                showError(firstError.message);
-                return;
+            // Add primary image
+            if (primaryImage) {
+                formData.append('imageValidation.mainImage', primaryImage);
             }
 
-            // Call the create product mutation
-            await createProduct.mutateAsync(validation.data);
+            // Add secondary images
+            const validSecondaryImages = secondaryImages
+                .filter(img => img.file !== null)
+                .map(img => img.file as File);
 
-            // Show success notification
-            showSuccess('Product created successfully!');
+            validSecondaryImages.forEach((file, index) => {
+                formData.append('imageValidation.secondaryImages', file);
+            });
 
-            // Reset form and images
-            reset();
-            setPrimaryImage(null);
-            setPrimaryImagePreview('https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp');
-            setSecondaryImages([
-                { file: null, preview: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp' }
-            ]);
+            createProduct.mutate(formData as FormData, {
+                onSuccess: () => {
+                    showSuccess('Product is created!');
 
-            // Invalidate queries and redirect
-            await queryClient.invalidateQueries({ queryKey: ['products'] });
-            router.push(ADMIN_MANAGEMENTS.PRODUCTS.VIEW);
+                    // Reset form and images
+                    reset();
+                    setPrimaryImage(null);
+                    setPrimaryImagePreview('https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp');
+                    setSecondaryImages([
+                        { file: null, preview: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp' }
+                    ]);
+
+                    // Invalidate queries and redirect after a delay
+                    queryClient.invalidateQueries({queryKey: [GET_ALL_PRODUCTS_QUERY_KEY]});
+                },
+                onError: (error) => {
+                    console.log(error.message);
+                    showError("Oops. Something went wrong!");
+                },
+            });
         } catch (error) {
             // Show error notification
             showError((error as Error).message || 'Failed to create product');
@@ -229,7 +229,8 @@ function AddNewProduct() {
                                 <CiDollar size={20}/>
                                 <input
                                     type="number"
-                                    {...register("price")}
+                                    step="0.01"
+                                    {...register("price", { valueAsNumber: true })}
                                     placeholder="Price tag"
                                 />
                             </label>
@@ -245,7 +246,7 @@ function AddNewProduct() {
                                 <BsBox size={20}/>
                                 <input
                                     type="number"
-                                    {...register("inventory")}
+                                    {...register("inventory", { valueAsNumber: true })}
                                     placeholder="Inventory"
                                 />
                             </label>
@@ -259,7 +260,12 @@ function AddNewProduct() {
                             <label className="label">Is Customizable</label>
                             <label className={`input validator w-full`}>
                                 <MdOutlineDashboardCustomize size={20}/>
-                                <select className="border-none w-full focus:outline-none focus:ring-0 focus:border-none" {...register("isCustomizable")}>
+                                <select
+                                    className="border-none w-full focus:outline-none focus:ring-0 focus:border-none"
+                                    {...register("isCustomizable", {
+                                        setValueAs: (value) => value === "true"
+                                    })}
+                                >
                                     <option value="true">Yes</option>
                                     <option value="false">No</option>
                                 </select>
@@ -278,6 +284,8 @@ function AddNewProduct() {
                                     fill
                                     style={{objectFit: "contain"}}
                                     quality={90}
+                                    loading="eager"
+                                    priority
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 />
 
@@ -294,14 +302,28 @@ function AddNewProduct() {
                                             type="file"
                                             accept="image/*"
                                             disabled={isPending}
-                                            {...register("imageValidation.mainImage")}
                                             className={`file-input flex-1 ${errors.imageValidation?.mainImage ? "file-input-error" : "file-input-primary"}`}
-                                            onChange={handlePrimaryImageChange}
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    setPrimaryImage(file);
+                                                    const reader = new FileReader();
+                                                    reader.onloadend = () => {
+                                                        setPrimaryImagePreview(reader.result as string);
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            }}
                                         />
                                         {primaryImage && (
                                             <button
                                                 type="button"
-                                                onClick={handleDeletePrimaryImage}
+                                                onClick={() => {
+                                                    setPrimaryImage(null);
+                                                    setPrimaryImagePreview('https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp');
+                                                    const fileInput = document.getElementById('primary-image-input') as HTMLInputElement;
+                                                    if (fileInput) fileInput.value = '';
+                                                }}
                                                 className="btn btn-error btn-square"
                                                 disabled={isPending}
                                             >
@@ -346,7 +368,7 @@ function AddNewProduct() {
                                                 accept="image/*"
                                                 disabled={isPending}
                                                 {...register("imageValidation.secondaryImages")}
-                                                className={`file-input flex-1 ${errors.imageValidation?.secondaryImages?.[index] ? 'file-input-error' : 'file-input-primary'}`}
+                                                className={`file-input flex-1 file-input-primary`}
                                                 onChange={(e) => handleSecondaryImageChange(index, e)}
                                             />
                                             {image.file && (
@@ -360,11 +382,6 @@ function AddNewProduct() {
                                                 </button>
                                             )}
                                         </div>
-                                        {errors.imageValidation?.secondaryImages?.[index]?.message && (
-                                            <small className="text-error">
-                                                {String(errors.imageValidation.secondaryImages[index]?.message)}
-                                            </small>
-                                        )}
                                     </div>
                                 </div>
                             </div>
