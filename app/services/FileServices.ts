@@ -60,7 +60,12 @@ export async function saveImage(image: File, dir: string, filename: string): Pro
 
         // Return web-accessible path (relative to public directory)
         const publicDir = path.join(process.cwd(), "public");
-        const webPath = filepath.replace(publicDir, "");
+        // Use path.relative to get the path relative to public directory
+        const relativePath = path.relative(publicDir, filepath);
+        // Convert to web path with forward slashes
+        const webPath = '/' + relativePath.split(path.sep).join('/');
+        console.log(`[Development] Web path: ${webPath}`);
+        console.log(`[Development] Filesystem path: ${filepath}`);
         return webPath;
     } catch (err) {
         console.log(err);

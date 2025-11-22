@@ -26,6 +26,10 @@ export const LOGOUT = {
     API: '/api/logout'
 };
 
+export const SVG = {
+    DEFAULT_IMAGE_SVG: '/images/productPreview/image.svg'
+}
+
 export const ADMIN_MANAGEMENTS = {
     //User
     USERS: { VIEW: "/admin/management/users", API: "/api/admin/user"},

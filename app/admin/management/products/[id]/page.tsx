@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useParams, useRouter} from "next/navigation";
 import Link from "next/link";
 import {ADMIN_MANAGEMENTS} from "@/app/Util/constants/paths";
@@ -8,7 +8,13 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {AddNewProductForm} from "@/app/services/ProductService";
 import {useQueryClient} from "@tanstack/react-query";
-import {GET_ALL_PRODUCTS_QUERY_KEY, useGetProductById, useUpdateProduct} from "@/app/busniessLogic/Product/productManager";
+import {
+    buildProductFormData,
+    GET_ALL_PRODUCTS_QUERY_KEY,
+    useGetProductById,
+    useProductImageHandlers,
+    useUpdateProduct
+} from "@/app/busniessLogic/Product/productManager";
 import {useToastNotifications} from "@/app/Util/toast";
 import UnexpectedError from "@/app/View/Component/UnexpectedError";
 import SuccessToast from "@/app/View/Component/SuccessToast";
@@ -17,6 +23,8 @@ import ProductImageFields from "@/app/admin/management/products/ProductImageFiel
 import ProductDescriptionFields from "@/app/admin/management/products/ProductDescriptionFields";
 
 function EditProduct() {
+    const MAX_SECONDARY_IMAGES = 6;
+
     const params = useParams();
     const productId = params.id as string;
     const router = useRouter();
@@ -27,20 +35,23 @@ function EditProduct() {
     const isPending = updateProduct.isPending;
     const { error, toastMessage, showError, showSuccess } = useToastNotifications();
 
-    const { register, handleSubmit, reset, formState: { errors }, setError } = useForm<AddNewProductForm>({
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<AddNewProductForm>({
         resolver: zodResolver(addNewProductSchema),
     });
 
-    // Image state
-    const [primaryImage, setPrimaryImage] = useState<File | null>(null);
-    const [primaryImagePreview, setPrimaryImagePreview] = useState<string>('https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp');
-
-    // Secondary images state
-    const [secondaryImages, setSecondaryImages] = useState<Array<{file: File | null, preview: string}>>([
-        { file: null, preview: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp' }
-    ]);
-
-    const MAX_SECONDARY_IMAGES = 6;
+    // Use custom hook for image handling
+    const {
+        primaryImage,
+        primaryImagePreview,
+        secondaryImages,
+        setPrimaryImage,
+        setPrimaryImagePreview,
+        setSecondaryImages,
+        handleSecondaryImageChange,
+        handleAddSecondaryImage,
+        handleClearSecondaryImage,
+        handleRemoveSecondaryImageCard,
+    } = useProductImageHandlers(MAX_SECONDARY_IMAGES);
 
     // Populate form when product data loads
     useEffect(() => {
@@ -65,8 +76,9 @@ function EditProduct() {
             });
 
             // Set primary image preview (existing image from server)
+            // Add cache-busting parameter to force browser to reload image
             if (product.mainImagePath) {
-                setPrimaryImagePreview(product.mainImagePath);
+                setPrimaryImagePreview(`${product.mainImagePath}?v=${Date.now()}`);
             }
 
             // Set secondary images (existing images from server)
@@ -76,84 +88,19 @@ function EditProduct() {
                     setSecondaryImages(
                         existingSecondaryImages.map((path: string) => ({
                             file: null,
-                            preview: path
+                            preview: `${path}?v=${Date.now()}`
                         }))
                     );
                 }
             }
         }
-    }, [product, reset]);
-
-    // Handle secondary image selection
-    const handleSecondaryImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setSecondaryImages(prev => {
-                    const updated = [...prev];
-                    updated[index] = { file, preview: reader.result as string };
-                    return updated;
-                });
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleAddSecondaryImage = () => {
-        if (secondaryImages.length < MAX_SECONDARY_IMAGES) {
-            setSecondaryImages(prev => [
-                ...prev,
-                { file: null, preview: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp' }
-            ]);
-        }
-    };
-
-    const handleClearSecondaryImage = (index: number) => {
-        setSecondaryImages(prev => {
-            const updated = [...prev];
-            updated[index] = { file: null, preview: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp' };
-            return updated;
-        });
-        const fileInput = document.getElementById(`secondary-image-input-${index}`) as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
-    };
-
-    const handleRemoveSecondaryImageCard = (index: number) => {
-        setSecondaryImages(prev => prev.filter((_, i) => i !== index));
-    };
+    }, [product, reset, setPrimaryImagePreview, setSecondaryImages]);
 
     // Handle form submission
     const onSubmit: SubmitHandler<AddNewProductForm> = (data: AddNewProductForm) => {
         try {
-            // Build FormData for multipart upload
-            const formData = new FormData();
-
-            // Add regular fields
-            formData.append('name', data.name);
-            formData.append('code', data.code);
-            formData.append('type', data.type);
-            formData.append('price', data.price.toString());
-            formData.append('inventory', data.inventory.toString());
-            formData.append('isCustomizable', data.isCustomizable.toString());
-            formData.append('detailDescription', data.detailDescription);
-            formData.append('careDescription', data.careDescription);
-            if (data.note) formData.append('note', data.note);
-            if (data.deal) formData.append('deal', data.deal);
-
-            // Add primary image only if a new one was selected
-            if (primaryImage) {
-                formData.append('imageValidation.mainImage', primaryImage);
-            }
-
-            // Add secondary images only if new ones were selected
-            const validSecondaryImages = secondaryImages
-                .filter(img => img.file !== null)
-                .map(img => img.file as File);
-
-            validSecondaryImages.forEach((file) => {
-                formData.append('imageValidation.secondaryImages', file);
-            });
+            // Build FormData using utility function
+            const formData = buildProductFormData(data, primaryImage, secondaryImages);
 
             updateProduct.mutate(formData, {
                 onSuccess: () => {

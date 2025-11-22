@@ -4,11 +4,7 @@ import {AddNewProductForm} from "@/app/services/ProductService";
 import {HiQuestionMarkCircle} from "react-icons/hi";
 import {IoAddSharp, IoCloseCircle, IoRemoveSharp} from "react-icons/io5";
 import Image from "next/image";
-
-interface SecondaryImageState {
-    file: File | null;
-    preview: string;
-}
+import {SecondaryImageState} from "@/app/busniessLogic/Product/productManager";
 
 interface ProductImageFieldsProps {
     register: UseFormRegister<AddNewProductForm>;
@@ -96,7 +92,7 @@ function ProductImageFields({
                                         type="button"
                                         onClick={() => {
                                             setPrimaryImage(null);
-                                            setPrimaryImagePreview('https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp');
+                                            setPrimaryImagePreview('/images/productPreview/image.svg');
                                             const fileInput = document.getElementById('primary-image-input') as HTMLInputElement;
                                             if (fileInput) fileInput.value = '';
                                         }}
