@@ -20,6 +20,7 @@ export const USER_PROFILE_ADMIN_VIEW = {
     VIEW : '/admin/management/users/userProfile/',
     API: '/api/admin/user/'
 }
+
 export const LOGOUT = {
     VIEW : '/View/logout',
     API: '/api/logout'
@@ -33,7 +34,8 @@ export const ADMIN_MANAGEMENTS = {
     ISSUES: { VIEW: "/admin/management/issues"},
 
     //Product
-    PRODUCTS: { VIEW: "/admin/management/products"},
+    PRODUCTS: { VIEW: "/admin/management/products", API: "/api/admin/product" },
+    PRODUCT_PROFILE: {VIEW: "/admin/management/products/", API: "/api/admin/product/"},
     ADD_PRODUCT: { VIEW: "/admin/management/products/addNewProduct" , API: "/api/admin/product/addProduct" },
 
 }

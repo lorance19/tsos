@@ -1,7 +1,82 @@
 [
   {
-    "name": "Premium Velvet Curtain - Navy Blue",
-    "code": "CUR-001-NB",
+    "name": "Premium Velvet Curtain - Navy Blood",
+    "code": "CUR-001-NB-BLOOD",
+    "type": "CURTAIN",
+    "price": 12999,
+    "inventory": 12,
+    "isCustomizable": true,
+    "detailDescription": "Luxurious velvet curtains that add elegance to any room. Made from high-quality polyester velvet with a soft, plush texture. Features thermal insulation properties to keep your room warm in winter and cool in summer. Available in various sizes and comes with easy-to-install grommets.",
+    "careDescription": "Machine wash cold on gentle cycle. Tumble dry low. Do not bleach. Iron on low heat if needed.",
+    "mainImagePath": "/placeholder/curtain-navy-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/curtain-navy-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/curtain-navy-detail1.jpg",
+          "/placeholder/curtain-navy-detail2.jpg",
+          "/placeholder/curtain-navy-room.jpg"
+        ]
+      }
+    ],
+    "deals": ["NEW", "TEN_OFF"],
+    "rating": 4.5,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Premium Velvet Curtain - Navy Yellow",
+    "code": "CUR-001-NB-YELLOW",
+    "type": "CURTAIN",
+    "price": 12999,
+    "inventory": 3,
+    "isCustomizable": true,
+    "detailDescription": "Luxurious velvet curtains that add elegance to any room. Made from high-quality polyester velvet with a soft, plush texture. Features thermal insulation properties to keep your room warm in winter and cool in summer. Available in various sizes and comes with easy-to-install grommets.",
+    "careDescription": "Machine wash cold on gentle cycle. Tumble dry low. Do not bleach. Iron on low heat if needed.",
+    "mainImagePath": "/placeholder/curtain-navy-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/curtain-navy-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/curtain-navy-detail1.jpg",
+          "/placeholder/curtain-navy-detail2.jpg",
+          "/placeholder/curtain-navy-room.jpg"
+        ]
+      }
+    ],
+    "deals": ["NEW", "TEN_OFF"],
+    "rating": 4.5,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Premium Velvet Curtain - Navy Green",
+    "code": "CUR-001-NB-Green",
+    "type": "CURTAIN",
+    "price": 12999,
+    "inventory": 10,
+    "isCustomizable": true,
+    "detailDescription": "Luxurious velvet curtains that add elegance to any room. Made from high-quality polyester velvet with a soft, plush texture. Features thermal insulation properties to keep your room warm in winter and cool in summer. Available in various sizes and comes with easy-to-install grommets.",
+    "careDescription": "Machine wash cold on gentle cycle. Tumble dry low. Do not bleach. Iron on low heat if needed.",
+    "mainImagePath": "/placeholder/curtain-navy-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/curtain-navy-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/curtain-navy-detail1.jpg",
+          "/placeholder/curtain-navy-detail2.jpg",
+          "/placeholder/curtain-navy-room.jpg"
+        ]
+      }
+    ],
+    "deals": ["NEW", "TEN_OFF"],
+    "rating": 4.5,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Premium Velvet Curtain - Navy RED",
+    "code": "CUR-001-NB-RED",
     "type": "CURTAIN",
     "price": 12999,
     "inventory": 50,
@@ -25,8 +100,8 @@
     "isDetailFilled": true
   },
   {
-    "name": "Modern Curtain Rod Set - Brushed Nickel",
-    "code": "HW-002-BN",
+    "name": "Modern Curtain Rod Set - Brushed Pearl",
+    "code": "HW-002-BN-PREAL",
     "type": "HARDWARE",
     "price": 4999,
     "inventory": 100,
@@ -44,6 +119,198 @@
       }
     ],
     "deals": ["FIFTEEN_OFF"],
+    "rating": 4.8,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Modern Curtain Rod Set - Brushed Nickel Dino",
+    "code": "HW-002-BN-DDN",
+    "type": "HARDWARE",
+    "price": 1253,
+    "inventory": 32,
+    "isCustomizable": false,
+    "detailDescription": "Professional-grade curtain rod set with a sleek brushed nickel finish. Includes adjustable rod (48-84 inches), mounting brackets, screws, and decorative finials. Supports up to 20 lbs. Easy to install with included instructions and all necessary hardware.",
+    "careDescription": "Wipe clean with a soft, dry cloth. Do not use abrasive cleaners.",
+    "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/rod-nickel-close.jpg",
+          "/placeholder/rod-nickel-install.jpg"
+        ]
+      }
+    ],
+    "deals": ["FIFTEEN_OFF"],
+    "rating": 4.8,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Modern Curtain Rod Set - Brushed Loli",
+    "code": "HW-002-BN-LL",
+    "type": "HARDWARE",
+    "price": 7895,
+    "inventory": 100,
+    "isCustomizable": false,
+    "detailDescription": "Professional-grade curtain rod set with a sleek brushed nickel finish. Includes adjustable rod (48-84 inches), mounting brackets, screws, and decorative finials. Supports up to 20 lbs. Easy to install with included instructions and all necessary hardware.",
+    "careDescription": "Wipe clean with a soft, dry cloth. Do not use abrasive cleaners.",
+    "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/rod-nickel-close.jpg",
+          "/placeholder/rod-nickel-install.jpg"
+        ]
+      }
+    ],
+    "deals": ["FIFTEEN_OFF"],
+    "rating": 4.8,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Modern Curtain Rod Set - Brushed Nickel Darkari",
+    "code": "HW-002-BN-DARKRI",
+    "type": "HARDWARE",
+    "price": 4999,
+    "inventory": 100,
+    "isCustomizable": false,
+    "detailDescription": "Professional-grade curtain rod set with a sleek brushed nickel finish. Includes adjustable rod (48-84 inches), mounting brackets, screws, and decorative finials. Supports up to 20 lbs. Easy to install with included instructions and all necessary hardware.",
+    "careDescription": "Wipe clean with a soft, dry cloth. Do not use abrasive cleaners.",
+    "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/rod-nickel-close.jpg",
+          "/placeholder/rod-nickel-install.jpg"
+        ]
+      }
+    ],
+    "deals": ["FIFTEEN_OFF"],
+    "rating": 4.8,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Modern Curtain Rod Set - Brushed Selfish",
+    "code": "HW-002-BN-SLF",
+    "type": "HARDWARE",
+    "price": 4999,
+    "inventory": 100,
+    "isCustomizable": false,
+    "detailDescription": "Professional-grade curtain rod set with a sleek brushed nickel finish. Includes adjustable rod (48-84 inches), mounting brackets, screws, and decorative finials. Supports up to 20 lbs. Easy to install with included instructions and all necessary hardware.",
+    "careDescription": "Wipe clean with a soft, dry cloth. Do not use abrasive cleaners.",
+    "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/rod-nickel-close.jpg",
+          "/placeholder/rod-nickel-install.jpg"
+        ]
+      }
+    ],
+    "deals": ["FIFTEEN_OFF"],
+    "rating": 4.8,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Modern Curtain Rod Set - Brushed Bamboo",
+    "code": "HW-002-CN-BAN",
+    "type": "HARDWARE",
+    "price": 5879,
+    "inventory": 25,
+    "isCustomizable": false,
+    "detailDescription": "Professional-grade curtain rod set with a sleek brushed nickel finish. Includes adjustable rod (48-84 inches), mounting brackets, screws, and decorative finials. Supports up to 20 lbs. Easy to install with included instructions and all necessary hardware.",
+    "careDescription": "Wipe clean with a soft, dry cloth. Do not use abrasive cleaners.",
+    "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/rod-nickel-close.jpg",
+          "/placeholder/rod-nickel-install.jpg"
+        ]
+      }
+    ],
+    "deals": ["FIFTEEN_OFF"],
+    "rating": 4.8,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Modern Curtain Rod Set - Brushed Tech",
+    "code": "HW-002-BN-MODERN",
+    "type": "HARDWARE",
+    "price": 12345,
+    "inventory": 500,
+    "isCustomizable": false,
+    "detailDescription": "Professional-grade curtain rod set with a sleek brushed nickel finish. Includes adjustable rod (48-84 inches), mounting brackets, screws, and decorative finials. Supports up to 20 lbs. Easy to install with included instructions and all necessary hardware.",
+    "careDescription": "Wipe clean with a soft, dry cloth. Do not use abrasive cleaners.",
+    "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/rod-nickel-close.jpg",
+          "/placeholder/rod-nickel-install.jpg"
+        ]
+      }
+    ],
+    "deals": ["NEW", "TWENTY_OFF"],
+    "rating": 4.8,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Modern Curtain Rod Set - Brushed PIKA",
+    "code": "HW-002-BN-POKEMON",
+    "type": "HARDWARE",
+    "price": 5800,
+    "inventory": 27,
+    "isCustomizable": false,
+    "detailDescription": "Professional-grade curtain rod set with a sleek brushed nickel finish. Includes adjustable rod (48-84 inches), mounting brackets, screws, and decorative finials. Supports up to 20 lbs. Easy to install with included instructions and all necessary hardware.",
+    "careDescription": "Wipe clean with a soft, dry cloth. Do not use abrasive cleaners.",
+    "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/rod-nickel-close.jpg",
+          "/placeholder/rod-nickel-install.jpg"
+        ]
+      }
+    ],
+    "deals": [],
+    "rating": 4.8,
+    "isOutOfStock": false,
+    "isDetailFilled": true
+  },
+  {
+    "name": "Modern Curtain Rod Set - Brushed Nickel Gitly",
+    "code": "HW-002-BN-GLHF",
+    "type": "HARDWARE",
+    "price": 7999,
+    "inventory": 100,
+    "isCustomizable": false,
+    "detailDescription": "Professional-grade curtain rod set with a sleek brushed nickel finish. Includes adjustable rod (48-84 inches), mounting brackets, screws, and decorative finials. Supports up to 20 lbs. Easy to install with included instructions and all necessary hardware.",
+    "careDescription": "Wipe clean with a soft, dry cloth. Do not use abrasive cleaners.",
+    "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+    "imageColorInfo": [
+      {
+        "mainImagePath": "/placeholder/rod-nickel-main.jpg",
+        "secondaryImagesPaths": [
+          "/placeholder/rod-nickel-close.jpg",
+          "/placeholder/rod-nickel-install.jpg"
+        ]
+      }
+    ],
+    "deals": [],
     "rating": 4.8,
     "isOutOfStock": false,
     "isDetailFilled": true

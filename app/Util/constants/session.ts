@@ -103,6 +103,10 @@ export class Credential {
         return this.user?.role === Role.ADMIN;
     }
 
+    isRootOrAdmin(): boolean {
+        return this.isRoot() || this.isAdmin()
+    }
+
     isUser(): boolean {
         return this.user?.role === Role.USER;
     }

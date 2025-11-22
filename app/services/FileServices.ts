@@ -57,7 +57,11 @@ export async function saveImage(image: File, dir: string, filename: string): Pro
         const filepath = path.join(uploadDir, filename) + extension;
         fs.writeFileSync(filepath, buffer);
         console.log(`[Development] File saved: ${filename} (${extension})`);
-        return filepath;
+
+        // Return web-accessible path (relative to public directory)
+        const publicDir = path.join(process.cwd(), "public");
+        const webPath = filepath.replace(publicDir, "");
+        return webPath;
     } catch (err) {
         console.log(err);
         throw new FileUploadError("Failed to upload file");
@@ -66,9 +70,15 @@ export async function saveImage(image: File, dir: string, filename: string): Pro
 
 export function deleteImages(imagePaths: string[]): void {
     try {
+        const publicDir = path.join(process.cwd(), "public");
         for (const imagePath of imagePaths) {
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);
+            // Convert web path to filesystem path if needed
+            const fsPath = imagePath.startsWith('/')
+                ? path.join(publicDir, imagePath)
+                : imagePath;
+
+            if (fs.existsSync(fsPath)) {
+                fs.unlinkSync(fsPath);
                 console.log(`[Development] File deleted: ${imagePath}`);
             }
         }

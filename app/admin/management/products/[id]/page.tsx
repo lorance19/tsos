@@ -1,5 +1,6 @@
-'use client'
-import React, {useState} from 'react';
+"use client"
+import React, {useEffect, useState} from 'react';
+import {useParams, useRouter} from "next/navigation";
 import Link from "next/link";
 import {ADMIN_MANAGEMENTS} from "@/app/Util/constants/paths";
 import {addNewProductSchema} from "@/app/busniessLogic/Product/productValidation";
@@ -7,7 +8,7 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {AddNewProductForm} from "@/app/services/ProductService";
 import {useQueryClient} from "@tanstack/react-query";
-import {GET_ALL_PRODUCTS_QUERY_KEY, useCreateProduct} from "@/app/busniessLogic/Product/productManager";
+import {GET_ALL_PRODUCTS_QUERY_KEY, useGetProductById, useUpdateProduct} from "@/app/busniessLogic/Product/productManager";
 import {useToastNotifications} from "@/app/Util/toast";
 import UnexpectedError from "@/app/View/Component/UnexpectedError";
 import SuccessToast from "@/app/View/Component/SuccessToast";
@@ -15,26 +16,73 @@ import ProductBasicInfoFields from "@/app/admin/management/products/ProductBasic
 import ProductImageFields from "@/app/admin/management/products/ProductImageFields";
 import ProductDescriptionFields from "@/app/admin/management/products/ProductDescriptionFields";
 
-function AddNewProduct() {
-    const { register, handleSubmit, reset, formState: { errors }, setError } = useForm({
+function EditProduct() {
+    const params = useParams();
+    const productId = params.id as string;
+    const router = useRouter();
+    const queryClient = useQueryClient();
+
+    const { data: product, isLoading: isLoadingProduct } = useGetProductById(productId);
+    const updateProduct = useUpdateProduct(productId);
+    const isPending = updateProduct.isPending;
+    const { error, toastMessage, showError, showSuccess } = useToastNotifications();
+
+    const { register, handleSubmit, reset, formState: { errors }, setError } = useForm<AddNewProductForm>({
         resolver: zodResolver(addNewProductSchema),
     });
-    const queryClient = useQueryClient();
-    const createProduct = useCreateProduct();
-    const isPending = createProduct.isPending;
-    const { error, toastMessage, showError, showSuccess } = useToastNotifications();
 
     // Image state
     const [primaryImage, setPrimaryImage] = useState<File | null>(null);
     const [primaryImagePreview, setPrimaryImagePreview] = useState<string>('https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp');
 
-    // Secondary images state (array of up to 6 images)
+    // Secondary images state
     const [secondaryImages, setSecondaryImages] = useState<Array<{file: File | null, preview: string}>>([
         { file: null, preview: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp' }
     ]);
 
     const MAX_SECONDARY_IMAGES = 6;
 
+    // Populate form when product data loads
+    useEffect(() => {
+        if (product) {
+            // Reset entire form with product data
+            reset({
+                name: product.name,
+                code: product.code,
+                type: product.type,
+                price: product.price,
+                inventory: product.inventory,
+                isCustomizable: product.isCustomizable,
+                detailDescription: product.detailDescription,
+                careDescription: product.careDescription,
+                note: product.note?.note || '',
+                deal: product.deals?.[0] || undefined,
+                // Image validation fields - not needed for edit but required by schema
+                imageValidation: {
+                    mainImage: null as any, // Will handle separately
+                    secondaryImages: [] as any
+                }
+            });
+
+            // Set primary image preview (existing image from server)
+            if (product.mainImagePath) {
+                setPrimaryImagePreview(product.mainImagePath);
+            }
+
+            // Set secondary images (existing images from server)
+            if (product.imageColorInfo && product.imageColorInfo.length > 0) {
+                const existingSecondaryImages = product.imageColorInfo[0].secondaryImagesPaths || [];
+                if (existingSecondaryImages.length > 0) {
+                    setSecondaryImages(
+                        existingSecondaryImages.map((path: string) => ({
+                            file: null,
+                            preview: path
+                        }))
+                    );
+                }
+            }
+        }
+    }, [product, reset]);
 
     // Handle secondary image selection
     const handleSecondaryImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +100,6 @@ function AddNewProduct() {
         }
     };
 
-    // Add new secondary image card
     const handleAddSecondaryImage = () => {
         if (secondaryImages.length < MAX_SECONDARY_IMAGES) {
             setSecondaryImages(prev => [
@@ -62,35 +109,22 @@ function AddNewProduct() {
         }
     };
 
-
-    // Clear uploaded image (keeps the card)
     const handleClearSecondaryImage = (index: number) => {
         setSecondaryImages(prev => {
             const updated = [...prev];
             updated[index] = { file: null, preview: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp' };
             return updated;
         });
-        // Reset the file input
         const fileInput = document.getElementById(`secondary-image-input-${index}`) as HTMLInputElement;
         if (fileInput) fileInput.value = '';
     };
 
-    // Remove entire secondary image card
     const handleRemoveSecondaryImageCard = (index: number) => {
         setSecondaryImages(prev => prev.filter((_, i) => i !== index));
     };
 
     // Handle form submission
-    const onSubmit: SubmitHandler<AddNewProductForm>  =  (data: AddNewProductForm) => {
-        // Validate primary image manually
-        if (!primaryImage) {
-            setError('imageValidation.mainImage', {
-                type: 'manual',
-                message: 'Main image is required'
-            });
-            return;
-        }
-
+    const onSubmit: SubmitHandler<AddNewProductForm> = (data: AddNewProductForm) => {
         try {
             // Build FormData for multipart upload
             const formData = new FormData();
@@ -105,35 +139,33 @@ function AddNewProduct() {
             formData.append('detailDescription', data.detailDescription);
             formData.append('careDescription', data.careDescription);
             if (data.note) formData.append('note', data.note);
+            if (data.deal) formData.append('deal', data.deal);
 
-            // Add primary image
+            // Add primary image only if a new one was selected
             if (primaryImage) {
                 formData.append('imageValidation.mainImage', primaryImage);
             }
 
-            // Add secondary images
+            // Add secondary images only if new ones were selected
             const validSecondaryImages = secondaryImages
                 .filter(img => img.file !== null)
                 .map(img => img.file as File);
 
-            validSecondaryImages.forEach((file, index) => {
+            validSecondaryImages.forEach((file) => {
                 formData.append('imageValidation.secondaryImages', file);
             });
 
-            createProduct.mutate(formData as FormData, {
+            updateProduct.mutate(formData, {
                 onSuccess: () => {
-                    showSuccess('Product is created!');
+                    showSuccess('Product updated successfully!');
 
-                    // Reset form and images
-                    reset();
-                    setPrimaryImage(null);
-                    setPrimaryImagePreview('https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp');
-                    setSecondaryImages([
-                        { file: null, preview: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp' }
-                    ]);
-
-                    // Invalidate queries and redirect after a delay
+                    // Invalidate queries
                     queryClient.invalidateQueries({queryKey: [GET_ALL_PRODUCTS_QUERY_KEY]});
+
+                    // Navigate back to products list after a delay
+                    setTimeout(() => {
+                        router.push(ADMIN_MANAGEMENTS.PRODUCTS.VIEW);
+                    }, 1500);
                 },
                 onError: (error) => {
                     console.log(error.message);
@@ -141,26 +173,49 @@ function AddNewProduct() {
                 },
             });
         } catch (error) {
-            // Show error notification
-            showError((error as Error).message || 'Failed to create product');
+            showError((error as Error).message || 'Failed to update product');
         }
     };
 
+    if (isLoadingProduct) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <span className="loading loading-spinner loading-lg"></span>
+            </div>
+        );
+    }
+
+    if (!product) {
+        return (
+            <div className="p-4">
+                <div className="alert alert-error">
+                    <span>Product not found</span>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className=" m-2 p-1 w-full">
+        <div className="m-2 p-1 w-full">
             <UnexpectedError errorMessage={error} />
-            {toastMessage && <SuccessToast toastMessage ={toastMessage}/>}
+            {toastMessage && <SuccessToast toastMessage={toastMessage}/>}
+
             <div className="breadcrumbs text-sm">
                 <ul>
-                    <li><Link className="link-primary" href={ADMIN_MANAGEMENTS.PRODUCTS.VIEW}>Product Management</Link>
+                    <li>
+                        <Link className="link-primary" href={ADMIN_MANAGEMENTS.PRODUCTS.VIEW}>
+                            Product Management
+                        </Link>
                     </li>
-                    <li>Add New Product</li>
+                    <li>Edit Product</li>
+                    <li>{product.name}</li>
                 </ul>
             </div>
+
             <form onSubmit={handleSubmit(onSubmit)}>
                 <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4 m-2">
                     {/* Basic Product Info */}
-                    <ProductBasicInfoFields register={register} errors={errors} title={"Add New Product"} />
+                    <ProductBasicInfoFields register={register} errors={errors} title={"Edit Product"}/>
 
                     {/* Image Upload Section */}
                     <ProductImageFields
@@ -183,9 +238,20 @@ function AddNewProduct() {
                     {/* Description Fields */}
                     <ProductDescriptionFields register={register} errors={errors} />
                 </fieldset>
-                <div className="flex w-full justify-center">
-                    <button type="submit" className="btn btn-lg btn-success m-2" disabled={isPending}>
-                        {isPending ? 'Creating Product...' : 'Create Product'}
+
+                <div className="flex w-full justify-center gap-2">
+                    <Link
+                        href={ADMIN_MANAGEMENTS.PRODUCTS.VIEW}
+                        className="btn btn-lg btn-ghost m-2"
+                    >
+                        Cancel
+                    </Link>
+                    <button
+                        type="submit"
+                        className="btn btn-lg btn-primary m-2"
+                        disabled={isPending}
+                    >
+                        {isPending ? 'Updating Product...' : 'Update Product'}
                     </button>
                 </div>
             </form>
@@ -193,4 +259,4 @@ function AddNewProduct() {
     );
 }
 
-export default AddNewProduct;
+export default EditProduct;
