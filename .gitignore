@@ -20,6 +20,7 @@
 # production
 /build
 /public/images/*
+/public/gifs/*
 # misc
 .DS_Store
 *.pem
