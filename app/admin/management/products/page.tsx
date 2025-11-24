@@ -7,6 +7,7 @@ import {ADMIN_MANAGEMENTS} from "@/app/Util/constants/paths";
 import {IoAdd} from "react-icons/io5";
 import {useGetAllProducts} from "@/app/busniessLogic/Product/productManager";
 import {ProductType} from "@prisma/client";
+import Pagination from "@/app/View/Component/Pagination";
 
 interface ProductInfo {
     id: string;
@@ -237,68 +238,12 @@ function Page() {
             </div>
 
             {/* Pagination Controls */}
-            {!isLoading && data && data.totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 my-4">
-                    <button
-                        className="btn btn-sm"
-                        onClick={() => setPage(1)}
-                        disabled={page === 1}
-                    >
-                        First
-                    </button>
-                    <button
-                        className="btn btn-sm"
-                        onClick={() => setPage(p => Math.max(1, p - 1))}
-                        disabled={page === 1}
-                    >
-                        Previous
-                    </button>
-
-                    {/* Page Numbers */}
-                    <div className="flex gap-1">
-                        {Array.from({ length: Math.min(5, data.totalPages) }, (_, i) => {
-                            let pageNum;
-                            if (data.totalPages <= 5) {
-                                pageNum = i + 1;
-                            } else if (page <= 3) {
-                                pageNum = i + 1;
-                            } else if (page >= data.totalPages - 2) {
-                                pageNum = data.totalPages - 4 + i;
-                            } else {
-                                pageNum = page - 2 + i;
-                            }
-
-                            return (
-                                <button
-                                    key={pageNum}
-                                    className={`btn btn-sm ${page === pageNum ? 'btn-primary' : 'btn-ghost'}`}
-                                    onClick={() => setPage(pageNum)}
-                                >
-                                    {pageNum}
-                                </button>
-                            );
-                        })}
-                    </div>
-
-                    <button
-                        className="btn btn-sm"
-                        onClick={() => setPage(p => Math.min(data.totalPages, p + 1))}
-                        disabled={page === data.totalPages}
-                    >
-                        Next
-                    </button>
-                    <button
-                        className="btn btn-sm"
-                        onClick={() => setPage(data.totalPages)}
-                        disabled={page === data.totalPages}
-                    >
-                        Last
-                    </button>
-
-                    <span className="text-sm ml-4">
-                        Page {page} of {data.totalPages}
-                    </span>
-                </div>
+            {!isLoading && data && (
+                <Pagination
+                    currentPage={page}
+                    totalPages={data.totalPages}
+                    onPageChange={setPage}
+                />
             )}
         </div>
     );

@@ -31,6 +31,49 @@ export async function getProductById(id: string) {
     })
 }
 
+export async function getProductsViewList(params: PaginationParams = {}) : Promise<PaginatedProducts> {
+    const page = params.page || 1;
+    const limit = params.limit || 50;
+    const skip = (page - 1) * limit;
+
+    const whereClause = {
+        isOutOfStock: false,
+        isDetailFilled: true
+    };
+
+    const [products, total] = await Promise.all([
+        prisma.product.findMany({
+            where: whereClause,
+            select: {
+                id: true,
+                name: true,
+                type: true,
+                price: true,
+                deals: true,
+                rating: true,
+                mainImagePath: true,
+                imageColorInfo: true,
+            },
+            skip,
+            take: limit,
+            orderBy: {
+                createdAt: 'desc'
+            }
+        }),
+        prisma.product.count({
+            where: whereClause
+        })
+    ]);
+
+    return {
+        products,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+    };
+}
+
 export async function getProducts(params: PaginationParams = {}): Promise<PaginatedProducts> {
     const page = params.page || 1;
     const limit = params.limit || 50;

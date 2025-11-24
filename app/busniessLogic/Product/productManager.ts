@@ -1,6 +1,6 @@
 import {useMutation, useQuery} from "@tanstack/react-query";
 import axios from "axios";
-import {ADMIN_MANAGEMENTS, SVG} from "@/app/Util/constants/paths";
+import {ADMIN_MANAGEMENTS, PRODUCT, SVG} from "@/app/Util/constants/paths";
 import {useState} from "react";
 import {AddNewProductForm} from "@/app/services/ProductService";
 
@@ -66,9 +66,25 @@ export function useGetAllProducts(params: UseGetAllProductsParams = {}) {
     });
 }
 
+export function useGetAllProductsForView(params: UseGetAllProductsParams = {}) {
+    const page = params.page || 1;
+    const limit = params.limit || 50;
+
+    return useQuery({
+        queryKey: [GET_ALL_PRODUCTS_VIEW_QUERY_KEY, page, limit],
+        queryFn: async() => {
+            const res = await axios.get(PRODUCT.LIST.API, {
+                params: { page, limit }
+            });
+            return res.data;
+        },
+        staleTime: 1000 * 60 * 50,// cache for 50 minutes
+    });
+}
+
 export const GET_ALL_PRODUCTS_QUERY_KEY = "products";
 export const GET_PRODUCT_BY_ID_QUERY_KEY = "product-";
-
+export const GET_ALL_PRODUCTS_VIEW_QUERY_KEY = "products-view";
 // ============= Image Handling Utilities =============
 
 export interface SecondaryImageState {

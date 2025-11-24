@@ -30,6 +30,7 @@ export const SVG = {
     DEFAULT_IMAGE_SVG: '/images/productPreview/image.svg'
 }
 
+
 export const ADMIN_MANAGEMENTS = {
     //User
     USERS: { VIEW: "/admin/management/users", API: "/api/admin/user"},
@@ -41,5 +42,9 @@ export const ADMIN_MANAGEMENTS = {
     PRODUCTS: { VIEW: "/admin/management/products", API: "/api/admin/product" },
     PRODUCT_PROFILE: {VIEW: "/admin/management/products/", API: "/api/admin/product/"},
     ADD_PRODUCT: { VIEW: "/admin/management/products/addNewProduct" , API: "/api/admin/product/addProduct" },
+}
 
+//View
+export const PRODUCT = {
+    LIST : { VIEW : '/View/product', API: '/api/view/product' },
 }

@@ -3,7 +3,7 @@ import React, {} from 'react';
 import {NavLink} from "@/app/View/Component/utilties/NavLink";
 import Link from "next/link";
 import {usePathname,} from "next/navigation";
-import {LOGIN_URL, USER_PROFILE} from "@/app/Util/constants/paths";
+import {LOGIN_URL, PRODUCT, USER_PROFILE} from "@/app/Util/constants/paths";
 import {Role} from "@prisma/client";
 import {useAuth} from "@/app/auth/context";
 
@@ -16,7 +16,7 @@ function Nav() {
     const allLinks: NavLink [] = [
         {label: 'Thit Ser', href: '/', hidden: true},
         {label: 'Home', href:'/View/home', hidden: false},
-        {label: 'Product', href:'/View/product', hidden: false},
+        {label: 'Product', href: PRODUCT.LIST.VIEW, hidden: false},
         {label: 'Contact Us', href:'/View/Contact Us', hidden: false},
 
         // Public links (only show when NOT logged in)
