@@ -72,22 +72,27 @@ function Nav() {
             <div className="flex justify-center pt-5" >
                 <Link href={allLinks.at(0)!.href} className="text-5xl font-serif my-3 text-secondary-content">{allLinks.at(0)!.label}</Link>
             </div>
-            <nav className="flex justify-center p-4 font-serif  ">
-                <ul className="flex gap-6">
-                    {visibleLinks.map(link =>
-                        <Link href={link.href} key={link.href}
-                              className={`
+            <nav className="grid grid-cols-6 p-4 font-serif px-8">
+                <div className="col-span-1"></div>
+                <div className="col-span-4">
+                    <ul className="flex gap-6 flex-1 justify-center">
+                        {visibleLinks.map(link =>
+                            <Link href={link.href} key={link.href}
+                                  className={`
                                 ${link.hidden ? "hidden" : ""}
                                 ${currentPath.includes(link.href) ? "text-secondary" : "text-black" }
                               hover:text-secondary transition delay-70 duration-150 hover:scale-110`}
-                        >
-                            {link.label}
-                        </Link>)}
-                    {user && <Link className={`${currentPath.includes(USER_PROFILE.VIEW) ? "text-secondary" : "text-black"} hover:text-secondary transition delay-70 duration-150 hover:scale-110`} href={`/View/userProfile/${user.userId}`} key={`user-profile-${user.userId}`}>Profile</Link>}
-                    {user && <SignOutButton />}
+                            >
+                                {link.label}
+                            </Link>)}
+                        {user && <Link className={`${currentPath.includes(USER_PROFILE.VIEW) ? "text-secondary" : "text-black"} hover:text-secondary transition delay-70 duration-150 hover:scale-110`} href={`/View/userProfile/${user.userId}`} key={`user-profile-${user.userId}`}>Profile</Link>}
+                        {user && <SignOutButton />}
+                    </ul>
+                </div>
+                <div className="flex-1 flex justify-end">
                     <button
                         onClick={toggleCart}
-                        className="relative text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="relative hover:text-secondary transition-colors"
                     >
                         <LuShoppingCart className="h-6 w-6" />
                         {cartCount > 0 && (
@@ -96,7 +101,7 @@ function Nav() {
                              </span>
                         )}
                     </button>
-                </ul>
+                </div>
             </nav>
         </div>
     );

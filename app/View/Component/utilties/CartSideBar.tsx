@@ -21,7 +21,7 @@ function CartSideBar() {
                 <div className={`h-full w-full bg-white shadow-xl flex flex-col transform transition-transform duration-300 ease-in-out ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
 
                     {/* Header */}
-                    <div className="flex items-center justify-between px-4 py-6 border-b">
+                    <div className="flex items-center justify-between px-4 py-6 border-b border-primary">
                         <h2 className="text-lg font-medium text-gray-900">Shopping Cart</h2>
                         <button
                             onClick={toggleCart}
@@ -39,7 +39,7 @@ function CartSideBar() {
                                 <p>Your cart is empty</p>
                                 <button
                                     onClick={toggleCart}
-                                    className="text-indigo-600 font-medium hover:underline"
+                                    className="text-secondary font-medium hover:underline"
                                 >
                                     Continue Shopping
                                 </button>
@@ -111,8 +111,8 @@ function CartSideBar() {
                                 Shipping and taxes calculated at checkout.
                             </p>
                             <button
-                                className="w-full flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-                            >
+                                className="btn btn-primary">
+
                                 Checkout
                             </button>
                         </div>

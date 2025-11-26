@@ -1,7 +1,7 @@
 'use client';
 
 import {ProductViewInfo} from "@/app/View/product/ProductList";
-import React, {createContext, useContext, useEffect, useMemo, useState} from "react";
+import React, {createContext, useCallback, useContext, useEffect, useMemo, useState} from "react";
 
 interface CartItem extends ProductViewInfo {
     quantity: number;
@@ -46,7 +46,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [cart, isLoaded]);
 
-    const addToCart = (product: ProductViewInfo) => {
+    const addToCart = useCallback((product: ProductViewInfo) => {
         setCart((prev) => {
             const existing = prev.find((item) => item.id === product.id);
             if (existing) {
@@ -59,13 +59,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setIsCartOpen(true); // Open cart to give feedback
             return [...prev, { ...product, quantity: 1 }];
         });
-    };
+    }, []);
 
-    const removeFromCart = (productId: string) => {
+    const removeFromCart = useCallback((productId: string) => {
         setCart((prev) => prev.filter((item) => item.id !== productId));
-    };
+    }, []);
 
-    const updateQuantity = (productId: string, delta: number) => {
+    const updateQuantity = useCallback((productId: string, delta: number) => {
         setCart((prev) =>
             prev.map((item) => {
                 if (item.id === productId) {
@@ -75,9 +75,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 return item;
             })
         );
-    };
+    }, []);
 
-    const toggleCart = () => setIsCartOpen(!isCartOpen);
+    const toggleCart = useCallback(() => setIsCartOpen(!isCartOpen), [isCartOpen]);
 
     // Derived State
     const cartTotal = useMemo(() => {
@@ -88,19 +88,20 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return cart.reduce((count, item) => count + item.quantity, 0);
     }, [cart]);
 
+    // Memoize context value to prevent unnecessary re-renders
+    const contextValue = useMemo(() => ({
+        cart,
+        isCartOpen,
+        toggleCart,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        cartTotal,
+        cartCount,
+    }), [cart, isCartOpen, toggleCart, addToCart, removeFromCart, updateQuantity, cartTotal, cartCount]);
+
     return (
-        <CartContext.Provider
-            value={{
-                cart,
-                isCartOpen,
-                toggleCart,
-                addToCart,
-                removeFromCart,
-                updateQuantity,
-                cartTotal,
-                cartCount,
-            }}
-        >
+        <CartContext.Provider value={contextValue}>
             {children}
         </CartContext.Provider>
     );
