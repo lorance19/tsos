@@ -3,8 +3,11 @@ import {ProductViewInfo} from "@/app/View/product/ProductList";
 import Link from "next/link";
 import ImageWithBadgeAtTop from "@/app/View/Component/Image/ImageWithBadgeAtTop";
 import StarRating from "@/app/View/Component/StarRating";
+import {useCartContext} from "@/app/View/product/CartContext";
 
 function ProductDisplay(props : ProductViewInfo) {
+
+    const { addToCart } = useCartContext();
     return (
         <Link href="/" className="h-[35rem] hover:cursor-pointer
             overflow-hidden
@@ -20,7 +23,22 @@ function ProductDisplay(props : ProductViewInfo) {
             <div className="flex flex-col">
                 <div className="font-sans font-light text-lg m-2">{props.name}</div>
                 <StarRating rating={props.rating}/>
-                <div className="font-thin mx-2">${props.price}</div>
+                <div className="flex flex-row justify-between gap-2">
+                    <div className="font-thin mx-2">${props.price}</div>
+
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            addToCart(props);
+                        }}
+                        className="bg-secondary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary transition-colors active:scale-95"
+                    >
+                        Add to Cart
+                    </button>
+                </div>
+
+
             </div>
         </Link>
     );

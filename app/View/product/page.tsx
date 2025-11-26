@@ -1,6 +1,10 @@
+'use client'
+
 import React from 'react';
 import ProductFilter from "@/app/View/product/ProductFilter";
 import ProductList from "@/app/View/product/ProductList";
+
+
 
 function Product() {
     return (

@@ -1,6 +1,5 @@
 'use client'
 import React, {} from 'react';
-import {NavLink} from "@/app/View/Component/utilties/NavLink";
 import Link from "next/link";
 import {usePathname,} from "next/navigation";
 import {LOGIN_URL, PRODUCT, USER_PROFILE} from "@/app/Util/constants/paths";
@@ -8,9 +7,20 @@ import {Role} from "@prisma/client";
 import {useAuth} from "@/app/auth/context";
 
 import SignOutButton from "@/app/View/Component/SignOutButton";
+import {LuShoppingCart} from "react-icons/lu";
+import {useCartContext} from "@/app/View/product/CartContext";
+
+export interface NavLink {
+    label: string;
+    href: string;
+    hidden: boolean;
+    roles?: Role[],
+    requireAuth?: boolean
+}
 
 function Nav() {
     const { user } = useAuth();
+    const { toggleCart, cartCount } = useCartContext();
     const currentPath = usePathname();
     // Define all possible links with role-based visibility
     const allLinks: NavLink [] = [
@@ -58,7 +68,7 @@ function Nav() {
     });
 
     return (
-        <div className="sticky top-0 z-50 flex flex-col bg-base-200 shadow-md">
+        <div className="sticky top-0 z-40 flex flex-col bg-base-200 shadow-md">
             <div className="flex justify-center pt-5" >
                 <Link href={allLinks.at(0)!.href} className="text-5xl font-serif my-3 text-secondary-content">{allLinks.at(0)!.label}</Link>
             </div>
@@ -75,6 +85,17 @@ function Nav() {
                         </Link>)}
                     {user && <Link className={`${currentPath.includes(USER_PROFILE.VIEW) ? "text-secondary" : "text-black"} hover:text-secondary transition delay-70 duration-150 hover:scale-110`} href={`/View/userProfile/${user.userId}`} key={`user-profile-${user.userId}`}>Profile</Link>}
                     {user && <SignOutButton />}
+                    <button
+                        onClick={toggleCart}
+                        className="relative text-gray-600 hover:text-indigo-600 transition-colors"
+                    >
+                        <LuShoppingCart className="h-6 w-6" />
+                        {cartCount > 0 && (
+                            <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full">
+                            {cartCount}
+                             </span>
+                        )}
+                    </button>
                 </ul>
             </nav>
         </div>

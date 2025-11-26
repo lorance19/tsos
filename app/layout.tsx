@@ -5,6 +5,9 @@ import QueryClientProvider from "@/app/Util/QueryClientProvider";
 import Nav from "@/app/View/Component/Nav";
 import {getCredential} from "@/app/Util/constants/session";
 import {AuthProvider} from "@/app/auth/context";
+import React from "react";
+import {CartProvider} from "@/app/View/product/CartContext";
+import CartSideBar from "@/app/View/Component/utilties/CartSideBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,10 +39,13 @@ export default async function RootLayout({
       >
       <QueryClientProvider>
           <AuthProvider user={user} isPending={false}>
-          <Nav/>
-          <main>
-              {children}
-          </main>
+              <CartProvider>
+                  <CartSideBar/>
+                  <Nav/>
+                  <main>
+                      {children}
+                  </main>
+              </CartProvider>
           </AuthProvider>
       </QueryClientProvider>
       </body>

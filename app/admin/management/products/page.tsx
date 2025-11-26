@@ -8,6 +8,7 @@ import {IoAdd} from "react-icons/io5";
 import {useGetAllProducts} from "@/app/busniessLogic/Product/productManager";
 import {ProductType} from "@prisma/client";
 import Pagination from "@/app/View/Component/Pagination";
+import {useCartContext} from "@/app/View/product/CartContext";
 
 interface ProductInfo {
     id: string;
