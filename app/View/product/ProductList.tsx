@@ -1,11 +1,12 @@
 'use client'
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useGetAllProductsForView} from "@/app/busniessLogic/Product/productManager";
 import {IoMdCloseCircleOutline} from "react-icons/io";
 import {$Enums, ProductType} from "@prisma/client";
 import Deals = $Enums.Deals;
 import ProductDisplay from "@/app/View/product/ProductDisplay";
 import Pagination from "@/app/View/Component/Pagination";
+import {SortOption} from "@/app/View/product/ProductFilter";
 
 export interface ProductViewInfo {
     id: string;
@@ -17,13 +18,25 @@ export interface ProductViewInfo {
     deals: Deals[];
 }
 
-function ProductList() {
+interface ProductListProps {
+    sortBy: SortOption;
+    filterType: ProductType | 'all';
+}
+
+function ProductList({ sortBy, filterType }: ProductListProps) {
     const [page, setPage] = useState(1);
     const [limit] = useState(10);
 
+    // Reset to page 1 when filters or sort changes
+    useEffect(() => {
+        setPage(1);
+    }, [sortBy, filterType]);
+
     const {data, isLoading, error} = useGetAllProductsForView({
         page,
-        limit
+        limit,
+        sortBy,
+        filterType
     })
 
     if (isLoading) {
@@ -54,7 +67,7 @@ function ProductList() {
 
     return (
         <div className="flex flex-col">
-            <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-2">
+            <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-2 items-start">
                 {products.map((p) => (
                     <ProductDisplay key={p.id} {...p} />
                 ))}

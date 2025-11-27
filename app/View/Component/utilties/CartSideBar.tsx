@@ -90,7 +90,6 @@ function CartSideBar() {
                                                     className="font-medium text-red-600 hover:text-red-500 flex items-center gap-1"
                                                 >
                                                     <LuTrash className="w-4 h-4" />
-                                                    <span className="hidden sm:inline">Remove</span>
                                                 </button>
                                             </div>
                                         </div>

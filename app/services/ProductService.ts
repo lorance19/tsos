@@ -15,6 +15,8 @@ export class ProductCreationError extends Error {
 export interface PaginationParams {
     page?: number;
     limit?: number;
+    sortBy?: 'newest' | 'price_low_high' | 'rating_high_low';
+    filterType?: import("@prisma/client").ProductType | 'all';
 }
 
 export interface PaginatedProducts {
@@ -35,11 +37,34 @@ export async function getProductsViewList(params: PaginationParams = {}) : Promi
     const page = params.page || 1;
     const limit = params.limit || 50;
     const skip = (page - 1) * limit;
+    const sortBy = params.sortBy || 'newest';
+    const filterType = params.filterType || 'all';
 
-    const whereClause = {
+    // Build where clause with optional type filter
+    const whereClause: any = {
         isOutOfStock: false,
         isDetailFilled: true
     };
+
+    // Add type filter if not 'all'
+    if (filterType !== 'all') {
+        whereClause.type = filterType;
+    }
+
+    // Determine orderBy based on sortBy parameter
+    let orderBy: any;
+    switch (sortBy) {
+        case 'price_low_high':
+            orderBy = { price: 'asc' };
+            break;
+        case 'rating_high_low':
+            orderBy = { rating: 'desc' };
+            break;
+        case 'newest':
+        default:
+            orderBy = { createdAt: 'desc' };
+            break;
+    }
 
     const [products, total] = await Promise.all([
         prisma.product.findMany({
@@ -56,9 +81,7 @@ export async function getProductsViewList(params: PaginationParams = {}) : Promi
             },
             skip,
             take: limit,
-            orderBy: {
-                createdAt: 'desc'
-            }
+            orderBy
         }),
         prisma.product.count({
             where: whereClause

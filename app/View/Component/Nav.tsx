@@ -1,5 +1,5 @@
 'use client'
-import React, {} from 'react';
+import React, {useEffect, useState} from 'react';
 import Link from "next/link";
 import {usePathname,} from "next/navigation";
 import {LOGIN_URL, PRODUCT, USER_PROFILE} from "@/app/Util/constants/paths";
@@ -22,6 +22,29 @@ function Nav() {
     const { user } = useAuth();
     const { toggleCart, cartCount } = useCartContext();
     const currentPath = usePathname();
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+
+            // Show nav when scrolling up, hide when scrolling down
+            if (currentScrollY < lastScrollY || currentScrollY < 10) {
+                setIsVisible(true);
+            } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                setIsVisible(false);
+            }
+
+            setLastScrollY(currentScrollY);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [lastScrollY]);
     // Define all possible links with role-based visibility
     const allLinks: NavLink [] = [
         {label: 'Thit Ser', href: '/', hidden: true},
@@ -68,7 +91,9 @@ function Nav() {
     });
 
     return (
-        <div className="sticky top-0 z-40 flex flex-col bg-base-200 shadow-md">
+        <div className={`sticky top-0 z-40 flex flex-col bg-base-200 shadow-md transition-transform duration-300 ease-in-out ${
+            isVisible ? 'translate-y-0' : '-translate-y-full'
+        }`}>
             <div className="flex justify-center pt-5" >
                 <Link href={allLinks.at(0)!.href} className="text-5xl font-serif my-3 text-secondary-content">{allLinks.at(0)!.label}</Link>
             </div>
@@ -92,11 +117,11 @@ function Nav() {
                 <div className="flex-1 flex justify-end">
                     <button
                         onClick={toggleCart}
-                        className="relative hover:text-secondary transition-colors"
+                        className="relative hover:cursor-pointer hover:text-secondary transition-colors p-1"
                     >
-                        <LuShoppingCart className="h-6 w-6" />
+                        <LuShoppingCart className="h-7 w-7" />
                         {cartCount > 0 && (
-                            <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full">
+                            <span className="absolute top-0 right-0 inline-flex items-center justify-center p-1 text-xs leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full">
                             {cartCount}
                              </span>
                         )}

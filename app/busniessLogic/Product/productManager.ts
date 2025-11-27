@@ -37,6 +37,8 @@ export function useUpdateProduct(productId: string) {
 export interface UseGetAllProductsParams {
     page?: number;
     limit?: number;
+    sortBy?: string;
+    filterType?: string;
 }
 
 export function useGetProductById(productId: string) {
@@ -69,12 +71,14 @@ export function useGetAllProducts(params: UseGetAllProductsParams = {}) {
 export function useGetAllProductsForView(params: UseGetAllProductsParams = {}) {
     const page = params.page || 1;
     const limit = params.limit || 50;
+    const sortBy = params.sortBy || 'newest';
+    const filterType = params.filterType || 'all';
 
     return useQuery({
-        queryKey: [GET_ALL_PRODUCTS_VIEW_QUERY_KEY, page, limit],
+        queryKey: [GET_ALL_PRODUCTS_VIEW_QUERY_KEY, page, limit, sortBy, filterType],
         queryFn: async() => {
             const res = await axios.get(PRODUCT.LIST.API, {
-                params: { page, limit }
+                params: { page, limit, sortBy, filterType }
             });
             return res.data;
         },

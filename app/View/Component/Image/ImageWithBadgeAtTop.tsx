@@ -23,7 +23,7 @@ function ImageWithBadgeAtTop({ image, hoverImage, primaryBadge, title }: Product
     return (
         <div>
             <div
-                className="relative h-[25rem] overflow-hidden"
+                className="relative h-[25rem] w-[25rem] overflow-hidden"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
