@@ -5,6 +5,7 @@ import prisma from "@/prisma/client";
 import {hash} from "bcryptjs";
 import _ from "lodash";
 import {removeUndefinedValues} from "@/app/Util/updateHelper";
+import {Credential} from "@/app/Util/constants/session";
 
 type UserForm = z.infer<typeof createUserSchema>;
 type AddUserForm = z.infer<typeof adminAddUserSchema>;
@@ -147,12 +148,27 @@ export async function createUser(bean: UserForm, role: Role) {
     };
 }
 
-export async function updateUser(bean: EditUserForm, updatedBy: IdAndRole | null, id: string) {
-    // If updatedBy is null, it means user is updating themselves (allowed)
-    if (updatedBy && (updatedBy.role !== Role.ADMIN && updatedBy.role !== Role.ROOT)) {
-        throw new Error("You are not authorized to update users");
-    }
+async function isEmailAlreadyExists(bean: {email: string, id: string}) {
+    const existingEmail = await prisma.login.findFirst({
+        where: {
+            communicationChannel: bean.email,
+            userId: { not: bean.id }
+        }
+    });
+    return !!existingEmail;
+}
 
+async function isUsernameAlreadyExists(bean: {username: string, id: string}) {
+    const existingUser = await prisma.login.findFirst({
+        where: {
+            userName: bean.username,
+            userId: { not: bean.id }
+        }
+    });
+    return !!existingUser;
+}
+
+export async function updateUser(bean: EditUserForm, cred: Credential, id: string) {
     const user = await prisma.user.findUnique({
         where: { id: id },
         include: { login: true }
@@ -162,32 +178,20 @@ export async function updateUser(bean: EditUserForm, updatedBy: IdAndRole | null
         throw new Error("User not found");
     }
 
-    if (user.role === Role.ROOT && updatedBy?.role !== Role.ROOT) {
+    if (user.role === Role.ROOT && !cred.isRoot()) {
         throw new Error("Only ROOT users can update ROOT users");
     }
 
     // Check if email is being changed and if it already exists
     if (bean.email && bean.email !== user.email) {
-        const existingEmail = await prisma.login.findFirst({
-            where: {
-                communicationChannel: bean.email,
-                userId: { not: id }
-            }
-        });
-        if (existingEmail) {
+        if (await isEmailAlreadyExists({ email: bean.email, id })) {
             throw new UserCreationError('email', "A user with this email already exists");
         }
     }
 
     // Check if username is being changed and if it already exists
     if (bean.userName && bean.userName !== user.login?.userName) {
-        const existingUsername = await prisma.login.findFirst({
-            where: {
-                userName: bean.userName,
-                userId: { not: id }
-            }
-        });
-        if (existingUsername) {
+        if (await isUsernameAlreadyExists({username: bean.userName, id})) {
             throw new UserCreationError('userName', "This username is already taken");
         }
     }

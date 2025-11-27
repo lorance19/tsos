@@ -69,7 +69,7 @@ export async function POST(
         // Update user with validated data
         const updatedUser = await updateUser(
             validationResult.data,
-            cred.getUser(),
+            cred,
             userMongoId
         );
 

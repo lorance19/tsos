@@ -7,6 +7,8 @@ import {COUNTRY} from "@/app/Util/constants/country";
 import {AiOutlineLoading3Quarters} from "react-icons/ai";
 import {IoCheckmarkCircleOutline} from "react-icons/io5";
 import {FaBan} from "react-icons/fa";
+import {useAuth} from "@/app/auth/context";
+import {Role} from "@prisma/client";
 
 type EditUserForm = z.infer<typeof editUserSchema>;
 
@@ -25,6 +27,8 @@ const COUNTRIES = Object.entries(COUNTRY).map(([key, value]) => ({
 }));
 
 function UserInfoFormFields({register, errors, avatarUrl, isSubmitting = false, onDeactivate, onActivate, isActive}: UserInfoFormFieldsProps) {
+    const { user } = useAuth();
+    const isAdminOrRoot = user!.role == Role.ADMIN || user!.role == Role.ROOT;
     return (
         <fieldset className={`fieldset border-base-300 rounded-box border p-4 ${isActive ? "" : "border-red-600"}`}>
             <legend className="fieldset-legend">
@@ -183,9 +187,9 @@ function UserInfoFormFields({register, errors, avatarUrl, isSubmitting = false, 
                     <label className="label">Country</label>
                     <label className={`input validator ${errors.address?.country ? 'input-error' : ''}`}>
                         <CiGlobe size={20}/>
-                        <select className="border-none focus:outline-none focus:ring-0 focus:border-none"
+                        <select className="select h-2 !border-none !outline-none focus:!border-none focus:!outline-none active:!border-none active:!outline-none"
                             {...register('address.country')}>
-                            <option value="">Select your country</option>
+                            <option value=""></option>
                             {COUNTRIES.map((country) => (
                                 <option key={country.code} value={country.code}>
                                     {country.name}
@@ -193,9 +197,9 @@ function UserInfoFormFields({register, errors, avatarUrl, isSubmitting = false, 
                             ))}
                         </select>
                     </label>
-                    {errors.userName && (
+                    {errors.address?.country && (
                         <small className="validator-hint visible text-error my-0">
-                            {errors.userName.message}
+                            {errors.address?.country.message}
                         </small>
                     )}
                 </div>
@@ -239,22 +243,26 @@ function UserInfoFormFields({register, errors, avatarUrl, isSubmitting = false, 
                 >
                     Reset Password
                 </button>
-                <button
-                    type="button"
-                    className={`btn bg-purple-400 ${isActive ? "" : "hidden btn-disabled"}`}
-                    disabled={isSubmitting}
-                    onClick={onDeactivate}
-                >
-                    Deactivate
-                </button>
-                <button
-                    type="button"
-                    className={`btn bg-success ${isActive ? "hidden btn-disabled" : ""}`}
-                    disabled={isSubmitting}
-                    onClick={onActivate}
-                >
-                    Activate
-                </button>
+                {isAdminOrRoot &&
+                    <button
+                        type="button"
+                        className={`btn bg-purple-400 ${isActive ? "" : "hidden btn-disabled"}`}
+                        disabled={isSubmitting}
+                        onClick={onDeactivate}
+                    >
+                        Deactivate
+                    </button>
+                }
+                {isAdminOrRoot &&
+                    <button
+                        type="button"
+                        className={`btn bg-success ${isActive ? "hidden btn-disabled" : ""}`}
+                        disabled={isSubmitting}
+                        onClick={onActivate}
+                    >
+                        Activate
+                    </button>
+                }
             </div>
         </fieldset>
     );
