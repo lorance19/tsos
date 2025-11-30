@@ -137,7 +137,7 @@ function Page() {
                         <tr key={index} className={`${user.isActive ? "" : "bg-red-100"}`}>
                             <th>{index + 1}</th>
                             <td>
-                                <Link className={`${user.isActive ? "link-secondary" : "link-error"} hover:link-primary`} href={USER_PROFILE_ADMIN_VIEW.VIEW + user.id}>{user.firstName} {user.lastName}</Link>
+                                <Link className={`${user.isActive ? "link-secondary" : "link-error"} hover:link-primary`} href={USER_PROFILE_ADMIN_VIEW(user.id).VIEW + user.id}>{user.firstName} {user.lastName}</Link>
 
                             </td>
                             <td>{user.login?.userName || '-'}</td>
@@ -151,7 +151,7 @@ function Page() {
                             </td>
                             <td>{user.phone || '-'}</td>
                             <td>
-                                <Link href={USER_PROFILE_ADMIN_VIEW.VIEW + user.id} className="btn btn-ghost btn-sm">Edit</Link>
+                                <Link href={USER_PROFILE_ADMIN_VIEW(user.id).VIEW} className="btn btn-ghost btn-sm">Edit</Link>
                                 <button
                                     className="btn btn-ghost btn-sm text-error"
                                     onClick={() => handleDeleteClick(user)}

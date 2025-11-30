@@ -15,6 +15,7 @@ import {
 } from "react-icons/fa";
 import {FaLocationPin} from "react-icons/fa6";
 import Link from "next/link";
+import {EDIT_PROFILE} from "@/app/Util/constants/paths";
 
 
 function UserProfileMain({id}: { id: string }) {
@@ -53,7 +54,7 @@ function UserProfileMain({id}: { id: string }) {
                 <div className="card-body">
                     <div className="flex justify-between card-title text-2xl text-primary mb-4 border-b border-primary pb-2">
                         General Profile Information
-                        <Link href="/" className="text-lg link text-secondary hover:underline"> <FaEdit/></Link>
+                        <Link href={EDIT_PROFILE(id).VIEW} className="text-lg link text-secondary hover:underline"> <FaEdit/></Link>
                     </div>
 
                     {/* User Info Fields */}

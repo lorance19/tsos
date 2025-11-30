@@ -220,13 +220,13 @@ function Page() {
                             </td>
                             <td>
                                 <Link
-                                    href={`${ADMIN_MANAGEMENTS.PRODUCT_PROFILE.VIEW}${product.id}`}
+                                    href={ADMIN_MANAGEMENTS.PRODUCT_PROFILE(product.id).VIEW}
                                     className="btn btn-ghost btn-sm"
                                 >
                                     View
                                 </Link>
                                 <Link
-                                    href={`${ADMIN_MANAGEMENTS.PRODUCT_PROFILE.VIEW}${product.id}`}
+                                    href={ADMIN_MANAGEMENTS.PRODUCT_PROFILE(product.id).VIEW}
                                     className="btn btn-ghost btn-sm"
                                 >
                                     Edit

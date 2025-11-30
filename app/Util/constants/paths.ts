@@ -13,13 +13,18 @@ export const LOGIN_SUCCESS = {
 
 export const USER_PROFILE = {
     VIEW : '/View/userProfile',
-    API: '/api/admin/user/'
+    API: '/api/admin/user/',
 }
 
-export const USER_PROFILE_ADMIN_VIEW = {
-    VIEW : '/admin/management/users/userProfile/',
-    API: '/api/admin/user/'
-}
+export const USER_PROFILE_ADMIN_VIEW = (userId: string) => ({
+    VIEW : `/admin/management/users/userProfile/${userId}`,
+    API: `/api/admin/user/${userId}`
+})
+
+export const EDIT_PROFILE = (userId: string) => ({
+    VIEW: `/View/userProfile/${userId}/editProfile`,
+    API: `/api/admin/user/${userId}`
+});
 
 export const LOGOUT = {
     VIEW : '/View/logout',
@@ -40,7 +45,10 @@ export const ADMIN_MANAGEMENTS = {
 
     //Product
     PRODUCTS: { VIEW: "/admin/management/products", API: "/api/admin/product" },
-    PRODUCT_PROFILE: {VIEW: "/admin/management/products/", API: "/api/admin/product/"},
+    PRODUCT_PROFILE: (productId: string) => ({
+        VIEW: `/admin/management/products/${productId}`,
+        API: `/api/admin/product/${productId}`
+    }),
     ADD_PRODUCT: { VIEW: "/admin/management/products/addNewProduct" , API: "/api/admin/product/addProduct" },
 }
 

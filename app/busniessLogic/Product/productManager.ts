@@ -22,7 +22,7 @@ export function useCreateProduct() {
 export function useUpdateProduct(productId: string) {
     return useMutation({
         mutationFn: async (data: FormData) => {
-            const res = await axios.patch(`${ADMIN_MANAGEMENTS.PRODUCT_PROFILE.API}${productId}`, data, {
+            const res = await axios.patch(`${ADMIN_MANAGEMENTS.PRODUCT_PROFILE(productId).API}`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             if (res.status === 200) {
@@ -45,7 +45,7 @@ export function useGetProductById(productId: string) {
     return useQuery({
         queryKey: [GET_PRODUCT_BY_ID_QUERY_KEY + productId],
         queryFn: async (data) => {
-            const res = await axios.get(ADMIN_MANAGEMENTS.PRODUCT_PROFILE.API + productId)
+            const res = await axios.get(ADMIN_MANAGEMENTS.PRODUCT_PROFILE(productId).API)
             return res.data;
         },
         enabled: !!productId, // Only fetch if productId exists
