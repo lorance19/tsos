@@ -5,9 +5,9 @@ import {
     useActivateUser,
     useDeactivateUser,
     useGetUserById,
-    useUpdateUser
+    useAdminUpdateUser
 } from "@/app/busniessLogic/User/userManager";
-import {editUserSchema} from "@/app/busniessLogic/User/userValidation";
+import {adminEditUserSchema} from "@/app/busniessLogic/User/userValidation";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -19,21 +19,23 @@ import UnexpectedError from "@/app/View/Component/UnexpectedError";
 import SuccessToast from "@/app/View/Component/SuccessToast";
 import {useQueryClient} from "@tanstack/react-query";
 import ConfirmModal from "@/app/View/Component/ConfirmModal";
+import {useAuth} from "@/app/auth/context";
 
 interface UserProfileProps {
     id: string
 }
-type editUserForm = z.infer<typeof editUserSchema>;
+type editUserForm = z.infer<typeof adminEditUserSchema>;
 type ActionType = 'update' | 'deactivate' | 'activate';
 
 function UserPersonalInfo({id}: UserProfileProps) {
     const queryClient = useQueryClient();
+    const { user: currentUser } = useAuth(); // Get logged-in admin's info
     const { data: user, isLoading } = useGetUserById(id);
     const deleteMutation = useDeactivateUser();
     const activateMutation = useActivateUser();
-    const updateUserMutation = useUpdateUser(id);
+    const updateUserMutation = useAdminUpdateUser(id);
     const {register, handleSubmit, formState: { errors }, reset} = useForm<editUserForm>({
-        resolver: zodResolver(editUserSchema)
+        resolver: zodResolver(adminEditUserSchema)
     });
     const { error: toastError, toastMessage, showError, showSuccess } = useToastNotifications();
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);

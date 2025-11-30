@@ -1,7 +1,7 @@
 import React from 'react';
 import {CiMail, CiUser, CiPhone, CiHome, CiHashtag, CiMap, CiGlobe} from "react-icons/ci";
 import {UseFormRegister, FieldErrors} from "react-hook-form";
-import {editUserSchema} from "@/app/busniessLogic/User/userValidation";
+import {adminEditUserSchema} from "@/app/busniessLogic/User/userValidation";
 import {z} from "zod";
 import {COUNTRY} from "@/app/Util/constants/country";
 import {AiOutlineLoading3Quarters} from "react-icons/ai";
@@ -10,7 +10,7 @@ import {FaBan} from "react-icons/fa";
 import {useAuth} from "@/app/auth/context";
 import {Role} from "@prisma/client";
 
-type EditUserForm = z.infer<typeof editUserSchema>;
+type EditUserForm = z.infer<typeof adminEditUserSchema>;
 
 interface UserInfoFormFieldsProps {
     register: UseFormRegister<EditUserForm>;

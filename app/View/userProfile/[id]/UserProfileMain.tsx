@@ -38,21 +38,13 @@ function UserProfileMain({id}: { id: string }) {
         day: 'numeric'
     });
 
-    const getRoleBadgeColor = (role: string) => {
-        switch (role) {
-            case 'ROOT': return 'bg-error text-white';
-            case 'ADMIN': return 'bg-warning text-white';
-            case 'CUSTOMER': return 'bg-success text-white';
-            default: return 'bg-secondary text-base-content';
-        }
-    };
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4">
             {/* General Profile Section */}
             <div className="card bg-base-100 shadow-xl">
                 <div className="card-body">
-                    <div className="flex justify-between card-title text-2xl text-primary mb-4 border-b border-primary pb-2">
+                    <div className="flex justify-between card-title text-2xl text-primary mb-4 pb-2">
                         General Profile Information
                         <Link href={EDIT_PROFILE(id).VIEW} className="text-lg link text-secondary hover:underline"> <FaEdit/></Link>
                     </div>
@@ -132,7 +124,7 @@ function UserProfileMain({id}: { id: string }) {
             {/* Second Section Placeholder */}
             <div className="card bg-base-100 shadow-xl">
                 <div className="card-body">
-                    <div className="card-title text-2xl mb-4 text-primary border-b pb-2">Orders from Past 30 Days</div>
+                    <div className="card-title text-2xl mb-4 text-primary pb-2">Orders from Past 30 Days</div>
                     <p className="text-base-content/60">Content coming soon...</p>
                 </div>
             </div>

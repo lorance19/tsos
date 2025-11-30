@@ -29,6 +29,7 @@ model User {
   updatedAt          DateTime   @updatedAt
   login              Login?
   address            Address?
+  dateOfBirth        DateTime?
 }
 
 type IdAndRole {

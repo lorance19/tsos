@@ -110,7 +110,7 @@ function Nav() {
                             >
                                 {link.label}
                             </Link>)}
-                        {user && <Link className={`${currentPath.includes(USER_PROFILE.VIEW) ? "text-secondary" : "text-black"} hover:text-secondary transition delay-70 duration-150 hover:scale-110`} href={`/View/userProfile/${user.userId}`} key={`user-profile-${user.userId}`}>Profile</Link>}
+                        {user && <Link className={`${currentPath.includes(USER_PROFILE(user.userId).VIEW) ? "text-secondary" : "text-black"} hover:text-secondary transition delay-70 duration-150 hover:scale-110`} href={`/View/userProfile/${user.userId}`} key={`user-profile-${user.userId}`}>Profile</Link>}
                         {user && <SignOutButton />}
                     </ul>
                 </div>

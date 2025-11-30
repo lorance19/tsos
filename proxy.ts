@@ -21,6 +21,8 @@ const PROTECTED_ROUTES: Record<string, ProtectedRouteConfig> ={
 
     // Example: ADMIN and MANAGER can access /management
     '/management': { roles: [Role.ADMIN, Role.ROOT], redirect: UNAUTH_URL },
+
+    '/View/userProfile': { roles: [Role.ADMIN, Role.ROOT, Role.USER], redirect: UNAUTH_URL },
 };
 
 // Define routes that should be inaccessible to logged-in users

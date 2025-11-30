@@ -1,15 +1,23 @@
 import {z} from "zod";
-import {adminAddUserSchema, createUserSchema, editUserSchema} from "@/app/busniessLogic/User/userValidation";
+import {
+    adminAddUserSchema,
+    createUserSchema,
+    adminEditUserSchema,
+    userEditUserSchema
+} from "@/app/busniessLogic/User/userValidation";
 import {IdAndRole, Role} from "@prisma/client";
 import prisma from "@/prisma/client";
 import {hash} from "bcryptjs";
 import _ from "lodash";
 import {removeUndefinedValues} from "@/app/Util/updateHelper";
 import {Credential} from "@/app/Util/constants/session";
+import {NextResponse} from "next/server";
+import {getCredentialAndUserId, validateUserId} from "@/app/services/RoleAndCredentialCheck";
 
 type UserForm = z.infer<typeof createUserSchema>;
 type AddUserForm = z.infer<typeof adminAddUserSchema>;
-type EditUserForm = z.infer<typeof editUserSchema>;
+type EditUserForm = z.infer<typeof adminEditUserSchema>;
+type UserEditForm = z.infer<typeof userEditUserSchema>;
 
 export class UserCreationError extends Error {
     constructor(public field: string, message: string) {
@@ -168,7 +176,7 @@ async function isUsernameAlreadyExists(bean: {username: string, id: string}) {
     return !!existingUser;
 }
 
-export async function updateUser(bean: EditUserForm, cred: Credential, id: string) {
+export async function updateUser(bean: EditUserForm | UserEditForm, cred: Credential, id: string) {
     const user = await prisma.user.findUnique({
         where: { id: id },
         include: { login: true }
@@ -189,15 +197,18 @@ export async function updateUser(bean: EditUserForm, cred: Credential, id: strin
         }
     }
 
-    // Check if username is being changed and if it already exists
-    if (bean.userName && bean.userName !== user.login?.userName) {
+    // Check if username is being changed and if it already exists (admin edit only)
+    if ('userName' in bean && bean.userName && bean.userName !== user.login?.userName) {
         if (await isUsernameAlreadyExists({username: bean.userName, id})) {
             throw new UserCreationError('userName', "This username is already taken");
         }
     }
 
-    // Separate address from other fields
-    const { address, userName, email, ...userFields } = bean;
+    // Separate address, userName, and email from other fields
+    // userName and email go to Login table, not User table
+    const { address, email, userName, ...userFields } = 'userName' in bean
+        ? bean  // EditUserForm has userName
+        : { ...bean, userName: undefined };  // UserEditForm doesn't have userName
 
     // Clean undefined/null values - only update fields that are present
     const cleanedUserFields = removeUndefinedValues({
@@ -302,3 +313,4 @@ export async function activateUser(userId: string, activatedBy: IdAndRole | null
         data: {isActive: true}
     });
 }
+

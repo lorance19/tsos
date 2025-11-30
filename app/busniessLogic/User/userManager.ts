@@ -1,15 +1,17 @@
 import {z} from "zod";
-import {adminAddUserSchema, createUserSchema, editUserSchema} from "@/app/busniessLogic/User/userValidation";
+import {adminAddUserSchema, createUserSchema, adminEditUserSchema, userEditUserSchema} from "@/app/busniessLogic/User/userValidation";
 import {useMutation, useQuery} from "@tanstack/react-query";
 import axios from "axios";
-import {ADMIN_MANAGEMENTS, SIGN_UP, USER_PROFILE} from "@/app/Util/constants/paths";
+import {ADMIN_MANAGEMENTS, EDIT_PROFILE, SIGN_UP, USER_PROFILE} from "@/app/Util/constants/paths";
 import {LoginForm} from "@/app/View/login/page";
 import {getUser} from "@/app/auth/login";
+import {Role} from "@prisma/client";
 
 
 type UserForm = z.infer<typeof createUserSchema>;
 type CreateUserForm = z.infer<typeof adminAddUserSchema>;
-type EditUserForm = z.infer<typeof editUserSchema>;
+type EditUserForm = z.infer<typeof adminEditUserSchema>;
+type UserEditForm = z.infer<typeof userEditUserSchema>;
 
 export function useSignUpUser() {
     return useMutation({
@@ -24,17 +26,32 @@ export function useSignUpUser() {
     });
 }
 
-export function useUpdateUser(userId: string) {
+export function useAdminUpdateUser(userId: string) {
     return useMutation({
         mutationFn: async (data: EditUserForm) => {
-            const res = await axios.post(`${ADMIN_MANAGEMENTS.USERS.API}/${userId}`, data);
+            const res = await axios.post(`${ADMIN_MANAGEMENTS.USERS.API}/${userId}` , data);
+
             if (res.status === 200 || res.status === 201) {
                 return res.data;
             } else {
                 throw new Error(res.statusText);
             }
         }
-    })
+    });
+}
+
+export function useUpdateUser(userId: string) {
+    return useMutation({
+        mutationFn: async (data: UserEditForm) => {
+            const res = await axios.patch(`${EDIT_PROFILE(userId).API}` , data);
+
+            if (res.status === 200 || res.status === 201) {
+                return res.data;
+            } else {
+                throw new Error(res.statusText);
+            }
+        }
+    });
 }
 
 export function useCreateUser() {
@@ -63,7 +80,7 @@ export function useGetUserById(userId: string) {
     return useQuery({
         queryKey: [GET_USER_BY_ID_QUERY_KEY + userId],
         queryFn: async() => {
-            const res = await axios.get(USER_PROFILE.API + userId);
+            const res = await axios.get(USER_PROFILE(userId).API);
             return res.data;
         },
         enabled: !!userId, // Only fetch if userId exists

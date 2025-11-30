@@ -11,19 +11,14 @@ export const LOGIN_SUCCESS = {
 };
 
 
-export const USER_PROFILE = {
-    VIEW : '/View/userProfile',
-    API: '/api/admin/user/',
-}
-
-export const USER_PROFILE_ADMIN_VIEW = (userId: string) => ({
-    VIEW : `/admin/management/users/userProfile/${userId}`,
-    API: `/api/admin/user/${userId}`
+export const USER_PROFILE = (id: string) => ({
+    VIEW : `/View/userProfile/${id}`,
+    API: `/api/view/user/${id}`,
 })
 
 export const EDIT_PROFILE = (userId: string) => ({
     VIEW: `/View/userProfile/${userId}/editProfile`,
-    API: `/api/admin/user/${userId}`
+    API: `/api/view/user/${userId}/editProfile`
 });
 
 export const LOGOUT = {
@@ -39,6 +34,11 @@ export const SVG = {
 export const ADMIN_MANAGEMENTS = {
     //User
     USERS: { VIEW: "/admin/management/users", API: "/api/admin/user"},
+    USER_PROFILE: (userId: string) => ({
+        VIEW : `/admin/management/users/userProfile/${userId}`,
+        API: `/api/admin/user/${userId}`
+    }),
+
     ADD_USER: { VIEW: "/admin/management/users/addNewUser" , API: "/api/admin/user/addUser" },
 
     ISSUES: { VIEW: "/admin/management/issues"},
