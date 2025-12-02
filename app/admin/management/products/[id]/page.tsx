@@ -2,6 +2,7 @@
 import React, {useEffect} from 'react';
 import {useParams, useRouter} from "next/navigation";
 import Link from "next/link";
+import {format} from "date-fns";
 import {ADMIN_MANAGEMENTS} from "@/app/Util/constants/paths";
 import {addNewProductSchema} from "@/app/busniessLogic/Product/productValidation";
 import {SubmitHandler, useForm} from "react-hook-form";
@@ -64,12 +65,17 @@ function EditProduct() {
                 code: product.code,
                 type: product.type,
                 price: product.price,
+                salePrice: product.salePrice ?? undefined,
+                // Convert date to YYYY-MM-DD string format for date input using date-fns
+                saleEndDate: product.saleEndDate
+                    ? (format(new Date(product.saleEndDate), 'yyyy-MM-dd') as any)
+                    : undefined,
+                badges: product.badges ?? undefined,
                 inventory: product.inventory,
                 isCustomizable: product.isCustomizable,
                 detailDescription: product.detailDescription,
                 careDescription: product.careDescription,
                 note: product.note?.note || '',
-                deal: product.deals?.[0] || undefined,
                 // Image validation fields - not needed for edit but required by schema
                 imageValidation: {
                     mainImage: null as any, // Will handle separately

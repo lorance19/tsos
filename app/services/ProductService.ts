@@ -74,7 +74,9 @@ export async function getProductsViewList(params: PaginationParams = {}) : Promi
                 name: true,
                 type: true,
                 price: true,
-                deals: true,
+                salePrice: true,
+                badges: true,
+                saleEndDate: true,
                 rating: true,
                 mainImagePath: true,
                 imageColorInfo: true,
@@ -149,6 +151,9 @@ export async function createProduct(
                 name: bean.name,
                 type: bean.type,
                 price: bean.price,
+                salePrice: bean.salePrice,
+                badges: bean.badges || [],
+                saleEndDate: bean.saleEndDate,
                 code: bean.code,
                 inventory: bean.inventory,
                 isCustomizable: bean.isCustomizable,
@@ -161,7 +166,6 @@ export async function createProduct(
                         secondaryImagesPaths: secondaryImagePaths
                     }
                 ],
-                deals: bean.deal ? [bean.deal] : [],
                 isDetailFilled: true,
                 isOutOfStock: bean.inventory === 0,
                 createdBy: {
@@ -206,6 +210,9 @@ export async function updateProduct(
                 name: bean.name,
                 type: bean.type,
                 price: bean.price,
+                salePrice: bean.salePrice,
+                badges: bean.badges || [],
+                saleEndDate: bean.saleEndDate,
                 code: bean.code,
                 inventory: bean.inventory,
                 isCustomizable: bean.isCustomizable,
@@ -218,7 +225,6 @@ export async function updateProduct(
                         secondaryImagesPaths: secondaryImagePaths
                     }
                 ],
-                deals: bean.deal ? [bean.deal] : [],
                 isDetailFilled: true,
                 isOutOfStock: bean.inventory === 0,
                 note: bean.note ? {

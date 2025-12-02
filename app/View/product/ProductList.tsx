@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {useGetAllProductsForView} from "@/app/busniessLogic/Product/productManager";
 import {IoMdCloseCircleOutline} from "react-icons/io";
 import {$Enums, ProductType} from "@prisma/client";
-import Deals = $Enums.Deals;
+import Badge = $Enums.Badge;
 import ProductDisplay from "@/app/View/product/ProductDisplay";
 import Pagination from "@/app/View/Component/Pagination";
 import {SortOption} from "@/app/View/product/ProductFilter";
@@ -13,9 +13,11 @@ export interface ProductViewInfo {
     name: string;
     type: ProductType;
     price: number;
+    salePrice: number | null;
     rating: number;
     mainImagePath: string;
-    deals: Deals[];
+    badges: Badge[];
+    saleEndDate: Date | null;
 }
 
 interface ProductListProps {

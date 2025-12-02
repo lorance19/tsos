@@ -5,10 +5,12 @@ import {HiQuestionMarkCircle} from "react-icons/hi";
 import {RiCharacterRecognitionLine} from "react-icons/ri";
 import {FaBarcode} from "react-icons/fa";
 import {IoPricetagOutline} from "react-icons/io5";
-import {ProductType} from "@prisma/client";
+import {ProductType, Badge} from "@prisma/client";
 import {CiDollar} from "react-icons/ci";
 import {BsBox} from "react-icons/bs";
 import {MdOutlineDashboardCustomize} from "react-icons/md";
+import {MdLocalOffer} from "react-icons/md";
+import {BsCalendarEvent} from "react-icons/bs";
 
 interface ProductBasicInfoFieldsProps {
     register: UseFormRegister<AddNewProductForm>;
@@ -86,12 +88,29 @@ function ProductBasicInfoFields({ register, errors, title }: ProductBasicInfoFie
                             type="number"
                             step="0.01"
                             {...register("price", {valueAsNumber: true})}
-                            placeholder="Price tag"
+                            placeholder="Regular Price"
                         />
                     </label>
                     {errors.price && (
                         <small className="validator-hint visible my-0 text-error">
                             {errors.price.message}
+                        </small>
+                    )}
+                </div>
+                <div className="flex flex-col gap-1 px-2">
+                    <label className="label">Sale Price</label>
+                    <label className={`input validator w-full ${errors.salePrice ? 'input-error' : ''}`}>
+                        <CiDollar size={20}/>
+                        <input
+                            type="number"
+                            step="0.01"
+                            {...register("salePrice", {valueAsNumber: true})}
+                            placeholder="Sale Price (Optional)"
+                        />
+                    </label>
+                    {errors.salePrice && (
+                        <small className="validator-hint visible my-0 text-error">
+                            {errors.salePrice.message}
                         </small>
                     )}
                 </div>
@@ -126,9 +145,74 @@ function ProductBasicInfoFields({ register, errors, title }: ProductBasicInfoFie
                         </select>
                     </label>
                 </div>
+                <div className="flex flex-col gap-1 px-2">
+                    <label className="label">Sale End Date
+                        <div className="tooltip tooltip-right" data-tip="Optional - When the sale expires">
+                            <HiQuestionMarkCircle/>
+                        </div>
+                    </label>
+                    <label className={`input validator w-full ${errors.saleEndDate ? 'input-error' : ''}`}>
+                        <BsCalendarEvent size={20}/>
+                        <input
+                            type="date"
+                            {...register("saleEndDate", {
+                                setValueAs: (value) => value ? new Date(value) : undefined
+                            })}
+                            placeholder="Sale End Date (Optional)"
+                        />
+                    </label>
+                    {errors.saleEndDate && (
+                        <small className="validator-hint visible my-0 text-error">
+                            {errors.saleEndDate.message}
+                        </small>
+                    )}
+                </div>
+            </div>
+
+            {/* Badges Section */}
+            <div className="mt-4">
+                <label className="label">
+                    <span>Product Badges</span>
+                    <div className="tooltip tooltip-right" data-tip="Select badges to display on product (e.g., NEW, HOT, BESTSELLER)">
+                        <HiQuestionMarkCircle/>
+                    </div>
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 p-4 bg-base-100 rounded-lg">
+                    {Object.values(Badge).map((badge) => (
+                        <label key={badge} className="flex items-center gap-2 cursor-pointer hover:bg-base-200 p-2 rounded">
+                            <input
+                                type="checkbox"
+                                value={badge}
+                                {...register("badges")}
+                                className="checkbox checkbox-primary checkbox-sm"
+                            />
+                            <span className={`badge badge-sm ${getBadgeColorClass(badge)}`}>
+                                {badge}
+                            </span>
+                        </label>
+                    ))}
+                </div>
+                {errors.badges && (
+                    <small className="validator-hint visible my-0 text-error">
+                        {errors.badges.message}
+                    </small>
+                )}
             </div>
         </>
     );
+}
+
+// Helper function to get badge colors for preview
+function getBadgeColorClass(badge: Badge): string {
+    switch (badge) {
+        case Badge.NEW: return "badge-primary";
+        case Badge.HOT: return "badge-error";
+        case Badge.SALE: return "badge-warning";
+        case Badge.LIMITED: return "badge-info";
+        case Badge.BESTSELLER: return "badge-success";
+        case Badge.TRENDING: return "badge-secondary";
+        default: return "badge-neutral";
+    }
 }
 
 export default ProductBasicInfoFields;

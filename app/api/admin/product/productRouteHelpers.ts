@@ -55,6 +55,25 @@ export function parseProductFormData(formData: FormData): any {
     if (data.inventory) data.inventory = parseInt(data.inventory as string);
     if (data.isCustomizable) data.isCustomizable = data.isCustomizable === 'true';
 
+    if (data.salePrice) data.salePrice = parseFloat(data.salePrice as string);
+
+    // Handle badges array - ensure it's an array or undefined
+    if (data.badges) {
+        // If it's not already an array, make it one
+        if (!Array.isArray(data.badges)) {
+            data.badges = [data.badges];
+        }
+    } else {
+        data.badges = undefined;
+    }
+
+    // Handle optional saleEndDate - convert to Date or undefined
+    if (data.saleEndDate && data.saleEndDate !== '') {
+        data.saleEndDate = new Date(data.saleEndDate as string);
+    } else {
+        data.saleEndDate = undefined;
+    }
+
     // Ensure imageValidation object exists
     if (!data.imageValidation) {
         data.imageValidation = {};

@@ -207,7 +207,21 @@ export function buildProductFormData(
     formData.append('detailDescription', data.detailDescription);
     formData.append('careDescription', data.careDescription);
     if (data.note) formData.append('note', data.note);
-    if (data.deal) formData.append('deal', data.deal);
+
+    // Optional fields - only append if they have values
+    if (data.saleEndDate) {
+        formData.append('saleEndDate', data.saleEndDate.toISOString());
+    }
+    if (data.salePrice !== undefined && data.salePrice !== null) {
+        formData.append('salePrice', data.salePrice.toString());
+    }
+    // Append each badge individually to create an array
+    if (data.badges && data.badges.length > 0) {
+        data.badges.forEach(badge => {
+            formData.append('badges', badge);
+        });
+    }
+
 
     // Add primary image (if provided)
     if (primaryImage) {
@@ -224,4 +238,16 @@ export function buildProductFormData(
     });
 
     return formData;
+}
+
+// Helper function to check if sale is active
+export function isSaleActive(saleEndDate: Date | null): boolean {
+    if (!saleEndDate) return true; // No end date means perpetual sale
+    return new Date(saleEndDate) > new Date();
+}
+
+// Helper function to calculate discount percentage
+export function calculateDiscountPercent(price: number, salePrice: number | null): number {
+    if (!salePrice || salePrice >= price) return 0;
+    return Math.round(((price - salePrice) / price) * 100);
 }

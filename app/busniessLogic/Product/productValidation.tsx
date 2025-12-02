@@ -2,7 +2,7 @@
 import {z} from "zod";
 import {$Enums, Color} from "@prisma/client";
 import ProductType = $Enums.ProductType;
-import Deals = $Enums.Deals;
+import Badge = $Enums.Badge;
 
 
 // Allowed image MIME types
@@ -36,24 +36,40 @@ const imageSetSchema = z.object({
     secondaryImages: z.any().optional()
 });
 
-// Base schema for common product detail fields
-const baseProductDetailSchema = z.object({
+// Base schema for common product detail fields (without refinement to allow extending)
+const baseProductDetailFieldsSchema = z.object({
     name: z.string().min(1, {message: "Product name is required"}),
     inventory: z.number({
         message: "Please enter a valid number for inventory"
     }).min(0, {message: "Inventory must be 0 or greater"}),
     type: z.enum(ProductType, { message: "Please select a valid product type" }),
-    deal: z.enum(Deals).optional(),
     price: z.number({
         message: "Please enter a valid number for price"
     }).min(0, {message:"Price must be 0 or greater"}),
+    salePrice: z.number({
+        message: "Please enter a valid number for sale price"
+    }).min(0, {message:"Sale price must be 0 or greater"}).optional(),
+    badges: z.array(z.enum(Badge)).optional(),
+    saleEndDate: z.date().optional(),
 });
 
-export const addNewProductSchema = baseProductDetailSchema.extend({
+// Refinement function to check sale price is less than regular price
+const salePriceRefinement = (data: any) => {
+    // If salePrice is set, it must be less than regular price
+    if (data.salePrice && data.salePrice >= data.price) {
+        return false;
+    }
+    return true;
+};
+
+export const addNewProductSchema = baseProductDetailFieldsSchema.extend({
     code: z.string().min(1, {message: "Code is required"}),
     detailDescription: z.string().min(1, "Detail description is required").max(1000, "Description too long"),
     careDescription: z.string().min(0, "Care description is required").max(500, "Care description too long"),
     note: z.string().optional(),
     isCustomizable: z.boolean(),
     imageValidation: imageSetSchema
+}).refine(salePriceRefinement, {
+    message: "Sale price must be less than regular price",
+    path: ["salePrice"]
 })

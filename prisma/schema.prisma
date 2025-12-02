@@ -96,9 +96,13 @@ model Product {
   // Basic Info (for landing page + detail)
   name         String
   type         ProductType
-  price        Int
-  isOutOfStock Boolean     @default(false)
-  deals        Deals[]
+  price        Int           // Original/regular price
+  salePrice    Int?          // Discounted price (if on sale)
+  isOutOfStock Boolean       @default(false)
+
+  // Discount & Badges
+  badges       Badge[]       // Display badges (NEW, HOT, etc.)
+  saleEndDate  DateTime?     // When sale ends (optional)
 
   // Images and Colors
   mainImagePath  String
@@ -129,15 +133,25 @@ enum Status {
   CLOSED
 }
 
-enum Deals {
-  BUY_1_GET_1
-  FIFTY_OFF
-  SEVENTY_OFF
-  TWENTY_OFF
-  FIFTEEN_OFF
-  TEN_OFF
+enum Badge {
   NEW
+  HOT
+  LIMITED
+  BESTSELLER
+  TRENDING
+  SALE
 }
+
+// DEPRECATED: Old Deals enum - being phased out
+// enum Deals {
+//   BUY_1_GET_1
+//   FIFTY_OFF
+//   SEVENTY_OFF
+//   TWENTY_OFF
+//   FIFTEEN_OFF
+//   TEN_OFF
+//   NEW
+// }
 
 enum Color {
   RED

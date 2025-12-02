@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import {useCartContext} from "@/app/View/product/CartContext";
+import {getEffectivePrice, useCartContext} from "@/app/View/product/CartContext";
 import {FiShoppingCart} from "react-icons/fi";
 import {IoClose} from "react-icons/io5";
 import {LuMinus, LuPlus, LuTrash} from "react-icons/lu";
+import {calculateDiscountPercent, isSaleActive} from "@/app/busniessLogic/Product/productManager";
 
 function CartSideBar() {
     const { cart, isCartOpen, toggleCart, removeFromCart, updateQuantity, cartTotal } = useCartContext();
@@ -46,8 +47,13 @@ function CartSideBar() {
                             </div>
                         ) : (
                             <ul className="space-y-6">
-                                {cart.map((item) => (
-                                    <li key={item.id} className="flex py-2 animate-in fade-in slide-in-from-right-4">
+                                {cart.map((item) => {
+                                    const onSale = item.salePrice && isSaleActive(item.saleEndDate);
+                                    const displayPrice = onSale ? item.salePrice! : item.price;
+                                    const discountPercent = onSale ? calculateDiscountPercent(item.price, item.salePrice) : 0;
+
+                                    return (
+                                        <li key={item.id} className="flex py-2 animate-in fade-in slide-in-from-right-4">
                                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                             <img
                                                 src={item.mainImagePath}
@@ -58,9 +64,12 @@ function CartSideBar() {
 
                                         <div className="ml-4 flex flex-1 flex-col">
                                             <div>
-                                                <div className="flex justify-between text-base font-medium text-gray-900">
+                                                <div className="flex justify-between text-base font-medium text-gray-900 ">
                                                     <h3 className="line-clamp-2 pr-4">{item.name}</h3>
-                                                    <p className="ml-4">${(item.price * item.quantity).toFixed(2)}</p>
+                                                    <p className={`ml-4 ${onSale ? "text-error" : ""}`}>
+                                                        ${ onSale ? ((item.salePrice! * item.quantity).toFixed(2)) : (item.price * item.quantity).toFixed(2)}<br/>
+                                                        {onSale && <small className="text-danger italic">{discountPercent}% OFF</small>}
+                                                    </p>
                                                 </div>
                                                 <p className="mt-1 text-sm text-gray-500">{item.type}</p>
                                             </div>
@@ -94,7 +103,8 @@ function CartSideBar() {
                                             </div>
                                         </div>
                                     </li>
-                                ))}
+                                    )
+                                })}
                             </ul>
                         )}
                     </div>

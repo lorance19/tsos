@@ -7,6 +7,22 @@ interface CartItem extends ProductViewInfo {
     quantity: number;
 }
 
+// Helper function to get effective price (sale price if active, otherwise regular price)
+export function getEffectivePrice(item: ProductViewInfo): number {
+    if (!item.salePrice) return item.price;
+
+    // Check if sale has an end date and if it's expired
+    if (item.saleEndDate) {
+        const saleEndDate = new Date(item.saleEndDate);
+        if (saleEndDate <= new Date()) {
+            return item.price; // Sale expired, use regular price
+        }
+    }
+
+    // Sale is active (no end date or end date is in the future)
+    return item.salePrice;
+}
+
 interface CartContextType {
     cart: CartItem[];
     isCartOpen: boolean;
@@ -81,7 +97,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Derived State
     const cartTotal = useMemo(() => {
-        return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+        return cart.reduce((total, item) => total + getEffectivePrice(item) * item.quantity, 0);
     }, [cart]);
 
     const cartCount = useMemo(() => {

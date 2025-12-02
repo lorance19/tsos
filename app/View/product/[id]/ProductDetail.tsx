@@ -2,42 +2,28 @@
 import React, {useState} from 'react';
 import {useParams} from "next/navigation";
 import {useAuth} from "@/app/auth/context";
-import {useGetProductById} from "@/app/busniessLogic/Product/productManager";
+import {calculateDiscountPercent, isSaleActive, useGetProductById} from "@/app/busniessLogic/Product/productManager";
 import {useCartContext} from "@/app/View/product/CartContext";
 import Image from "next/image";
 import StarRating from "@/app/View/Component/StarRating";
 import {$Enums, Color} from "@prisma/client";
-import Deals = $Enums.Deals;
+import Badge = $Enums.Badge;
 import ImageZoom from "@/app/View/Component/Image/ImageZoom";
 import {BsExclamationCircle} from "react-icons/bs";
 
-// Helper function to format deal text
-function formatDealText(deal: Deals): string {
-    const dealMap: Record<Deals, string> = {
-        [Deals.BUY_1_GET_1]: "Buy 1 Get 1",
-        [Deals.FIFTY_OFF]: "50% OFF",
-        [Deals.SEVENTY_OFF]: "70% OFF",
-        [Deals.TWENTY_OFF]: "20% OFF",
-        [Deals.FIFTEEN_OFF]: "15% OFF",
-        [Deals.TEN_OFF]: "10% OFF",
-        [Deals.NEW]: "NEW",
-    };
-    return dealMap[deal] || deal;
-}
-
-// Helper function to get deal badge color
-function getDealBadgeColor(deal: Deals): string {
-    switch (deal) {
-        case Deals.NEW: return "badge-primary";
-        case Deals.FIFTY_OFF:
-        case Deals.SEVENTY_OFF: return "badge-error";
-        case Deals.TWENTY_OFF:
-        case Deals.FIFTEEN_OFF:
-        case Deals.TEN_OFF: return "badge-warning";
-        case Deals.BUY_1_GET_1: return "badge-success";
+// Helper function to get badge color
+function getBadgeColor(badge: Badge): string {
+    switch (badge) {
+        case Badge.NEW: return "badge-primary";
+        case Badge.HOT: return "badge-error";
+        case Badge.SALE: return "badge-warning";
+        case Badge.LIMITED: return "badge-info";
+        case Badge.BESTSELLER: return "badge-success";
+        case Badge.TRENDING: return "badge-secondary";
         default: return "badge-neutral";
     }
 }
+
 
 function ProductDetail() {
     const params = useParams();
@@ -80,15 +66,22 @@ function ProductDetail() {
         : [product.mainImagePath];
     const currentImage = allImages[selectedImageIndex] || product.mainImagePath;
 
+    // Calculate pricing
+    const onSale = product.salePrice && isSaleActive(product.saleEndDate);
+    const displayPrice = onSale ? product.salePrice! : product.price;
+    const discountPercent = onSale ? calculateDiscountPercent(product.price, product.salePrice) : 0;
+
     // Prepare product data for cart (convert to ProductViewInfo format)
     const productForCart = {
         id: product.id,
         name: product.name,
         type: product.type,
         price: product.price,
+        salePrice: product.salePrice,
         rating: product.rating || 0,
         mainImagePath: product.mainImagePath,
-        deals: product.deals || [],
+        badges: product.badges || [],
+        saleEndDate: product.saleEndDate,
     };
 
     return (
@@ -98,22 +91,10 @@ function ProductDetail() {
                 <div className="space-y-4">
                     {/* Main Image */}
                     <div className="relative w-full h-[500px] bg-base-200 rounded-lg overflow-hidden">
-                        {product.deals && product.deals.length > 0 && (
-                            <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
-                                {product.deals.map((deal: Deals, idx: number) => (
-                                    <span
-                                        key={idx}
-                                        className={`badge ${getDealBadgeColor(deal)} badge-lg font-bold`}
-                                    >
-                                        {formatDealText(deal)}
-                                    </span>
-                                ))}
-                            </div>
-                        )}
                         <ImageZoom
                             src={currentImage}
                             alt={product.name}
-                            quality={100}
+                            quality={90}
                         />
                     </div>
 
@@ -187,8 +168,16 @@ function ProductDetail() {
                     </div>
 
                     {/* Price */}
-                    <div className="text-2xl">
-                        ${product.price}
+                    <div className="space-y-1">
+                        {onSale ? (
+                            <div className="flex items-baseline gap-3">
+                                <span className="text-3xl font-bold text-error">${displayPrice}</span>
+                                <span className="text-xl text-base-content/50 line-through">${product.price}</span>
+                                <span className="text-error">Save {discountPercent}%</span>
+                            </div>
+                        ) : (
+                            <div className="text-3xl font-bold text-primary">${displayPrice}</div>
+                        )}
                     </div>
 
                     {/* Stock Status */}
