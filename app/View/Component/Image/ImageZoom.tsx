@@ -37,7 +37,6 @@ const ImageZoom: React.FC<ImageZoomProps> = ({
     };
 
     return (
-        <div className="aspect-square max-w-full">
         <div
             ref={imageRef}
             className="relative w-full h-full overflow-hidden cursor-zoom-in"
@@ -51,12 +50,13 @@ const ImageZoom: React.FC<ImageZoomProps> = ({
                 fill
                 alt={alt}
                 style={{
-                    objectFit: "cover",
+                    objectFit: "contain",
                     transition: isZooming ? 'opacity 0.3s ease' : 'none',
                     opacity: isZooming ? 0 : 1
                 }}
                 priority
                 quality={quality}
+                sizes="(max-width: 768px) 100vw, 50vw"
             />
 
             {/* Zoomed Image */}
@@ -65,13 +65,12 @@ const ImageZoom: React.FC<ImageZoomProps> = ({
                     className="absolute inset-0 pointer-events-none"
                     style={{
                         backgroundImage: `url(${src})`,
-                        backgroundSize: `${zoomScale * 100}%`,
+                        backgroundSize: `${zoomScale * 50}%`,
                         backgroundPosition: `${mousePosition.x}% ${mousePosition.y}%`,
                         backgroundRepeat: 'no-repeat'
                     }}
                 />
             )}
-        </div>
         </div>
     );
 };

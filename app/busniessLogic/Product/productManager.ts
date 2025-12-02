@@ -3,6 +3,7 @@ import axios from "axios";
 import {ADMIN_MANAGEMENTS, PRODUCT, SVG} from "@/app/Util/constants/paths";
 import {useState} from "react";
 import {AddNewProductForm} from "@/app/services/ProductService";
+import {IdAndRole, Role} from "@prisma/client";
 
 export function useCreateProduct() {
     return useMutation({
@@ -41,11 +42,22 @@ export interface UseGetAllProductsParams {
     filterType?: string;
 }
 
-export function useGetProductById(productId: string) {
+export function useGetProductById(productId: string, idAndRole: IdAndRole | null) {
     return useQuery({
         queryKey: [GET_PRODUCT_BY_ID_QUERY_KEY + productId],
         queryFn: async (data) => {
-            const res = await axios.get(ADMIN_MANAGEMENTS.PRODUCT_PROFILE(productId).API)
+            const roleApiMap: Partial<Record<Role, string>> = {
+                [Role.ROOT]: ADMIN_MANAGEMENTS.PRODUCT_PROFILE(productId).API,
+                [Role.ADMIN]: ADMIN_MANAGEMENTS.PRODUCT_PROFILE(productId).API,
+                // Future roles can be added here
+                // [Role.CUSTOMER]: SOME_OTHER_API_PATH,
+            };
+
+            // Default to public API, override only for specific roles
+            const apiPath = (idAndRole?.role && roleApiMap[idAndRole.role])
+                ?? PRODUCT.STANDALONE(productId).API;
+
+            const res = await axios.get(apiPath)
             return res.data;
         },
         enabled: !!productId, // Only fetch if productId exists

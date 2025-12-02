@@ -55,4 +55,7 @@ export const ADMIN_MANAGEMENTS = {
 //View
 export const PRODUCT = {
     LIST : { VIEW : '/View/product', API: '/api/view/product' },
+    STANDALONE: (productId: string) => (
+        { VIEW : `/View/product/${productId}`, API: `/api/view/product/${productId}` }
+    ),
 }

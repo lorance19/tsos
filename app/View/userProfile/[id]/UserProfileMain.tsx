@@ -53,7 +53,7 @@ function UserProfileMain({id}: { id: string }) {
                     <div className="space-y-4 ">
                         {/* Full Name */}
                         <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200 transition-colors">
-                            <FaUser className="text-primary text-lg flex-shrink-0" />
+                            <FaUser className=" text-lg flex-shrink-0" />
                             <div className="flex-1">
                                 <p className="text-xs text-base-content/60 uppercase tracking-wide">Full Name</p>
                                 <p className={`font-medium ${!user.firstName && !user.lastName ? 'text-error italic' : ''}`}>
@@ -64,7 +64,7 @@ function UserProfileMain({id}: { id: string }) {
 
                         {/* Email */}
                         <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200 transition-colors">
-                            <FaEnvelope className="text-primary text-lg flex-shrink-0" />
+                            <FaEnvelope className=" text-lg flex-shrink-0" />
                             <div className="flex-1">
                                 <p className="text-xs text-base-content/60 uppercase tracking-wide">Email</p>
                                 <p className="font-medium break-all">{user.email}</p>
@@ -73,7 +73,7 @@ function UserProfileMain({id}: { id: string }) {
 
                         {/* Phone */}
                         <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200 transition-colors">
-                            <FaPhone className="text-primary text-lg flex-shrink-0" />
+                            <FaPhone className=" text-lg flex-shrink-0" />
                             <div className="flex-1">
                                 <p className="text-xs text-base-content/60 uppercase tracking-wide">Phone</p>
                                 <p className={`font-medium ${!user.phone ? 'text-error italic' : ''}`}>
@@ -99,7 +99,7 @@ function UserProfileMain({id}: { id: string }) {
 
                         {/* Created Date */}
                         <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200 transition-colors">
-                            <FaCalendar className="text-primary text-lg flex-shrink-0" />
+                            <FaCalendar className="text-lg flex-shrink-0" />
                             <div className="flex-1">
                                 <p className="text-xs text-base-content/60 uppercase tracking-wide">Member Since</p>
                                 <p className="font-medium">{formatDate(user.createdAt)}</p>
@@ -108,7 +108,7 @@ function UserProfileMain({id}: { id: string }) {
 
                         {/* Address */}
                         <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200 transition-colors">
-                            <FaLocationPin className="text-primary text-lg flex-shrink-0" />
+                            <FaLocationPin className="text-lg flex-shrink-0" />
                             <div className="flex-1">
                                 <p className="text-xs text-base-content/60 uppercase tracking-wide">Address</p>
                                 <span className={`${user.address ? '' : 'text-error'}`}>

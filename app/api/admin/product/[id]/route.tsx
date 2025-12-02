@@ -4,6 +4,7 @@ import {getProductById, updateProduct} from "@/app/services/ProductService";
 import {addNewProductSchema} from "@/app/busniessLogic/Product/productValidation";
 import {saveImage} from "@/app/services/FileServices";
 import {handleProductError, parseProductFormData, rollbackImages} from "@/app/api/admin/product/productRouteHelpers";
+import {handleGetProductById} from "@/app/services/routeHandler/productRouteHandler";
 
 export async function GET(
     request: NextRequest,
@@ -21,22 +22,7 @@ export async function GET(
     if (!cred.isRootOrAdmin() || !cred.isLoggedIn()) {
         throw new Error("Access denied");
     }
-
-    try {
-        const product = await getProductById(productMongoId);
-        if (!product) {
-            return NextResponse.json(
-                { error: "Product not found" },
-                {status: 404}
-            );
-        }
-        return NextResponse.json(product, { status: 200 });
-    } catch (error) {
-        return NextResponse.json(
-            {error: (error as Error).message},
-            {status: 403}
-        );
-    }
+    return await handleGetProductById(productMongoId);
 }
 
 export async function PATCH(

@@ -21,6 +21,7 @@ import SuccessToast from "@/app/View/Component/SuccessToast";
 import ProductBasicInfoFields from "@/app/admin/management/products/ProductBasicInfoFields";
 import ProductImageFields from "@/app/admin/management/products/ProductImageFields";
 import ProductDescriptionFields from "@/app/admin/management/products/ProductDescriptionFields";
+import {useAuth} from "@/app/auth/context";
 
 function EditProduct() {
     const MAX_SECONDARY_IMAGES = 6;
@@ -29,8 +30,9 @@ function EditProduct() {
     const productId = params.id as string;
     const router = useRouter();
     const queryClient = useQueryClient();
+    const {user} = useAuth();
 
-    const { data: product, isLoading: isLoadingProduct } = useGetProductById(productId);
+    const { data: product, isLoading: isLoadingProduct } = useGetProductById(productId, user!);
     const updateProduct = useUpdateProduct(productId);
     const isPending = updateProduct.isPending;
     const { error, toastMessage, showError, showSuccess } = useToastNotifications();
