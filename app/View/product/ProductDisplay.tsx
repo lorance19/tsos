@@ -55,7 +55,7 @@ function ProductDisplay(props : ProductViewInfo) {
                     <div className="flex flex-col mx-2">
                         {onSale ? (
                             <>
-                                <span className="font-bold text-error">${displayPrice}</span>
+                                <span className="font-open text-error">${displayPrice} (Save ${discountPercent}%)</span>
                                 <span className="text-sm text-base-content/50 line-through">${props.price}</span>
                             </>
                         ) : (

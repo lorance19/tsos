@@ -29,6 +29,7 @@ model User {
   updatedAt          DateTime   @updatedAt
   login              Login?
   address            Address?
+  orders             Order[]
   dateOfBirth        DateTime?
 }
 
@@ -96,13 +97,13 @@ model Product {
   // Basic Info (for landing page + detail)
   name         String
   type         ProductType
-  price        Int           // Original/regular price
-  salePrice    Int?          // Discounted price (if on sale)
-  isOutOfStock Boolean       @default(false)
+  price        Int // Original/regular price
+  salePrice    Int? // Discounted price (if on sale)
+  isOutOfStock Boolean     @default(false)
 
   // Discount & Badges
-  badges       Badge[]       // Display badges (NEW, HOT, etc.)
-  saleEndDate  DateTime?     // When sale ends (optional)
+  badges      Badge[] // Display badges (NEW, HOT, etc.)
+  saleEndDate DateTime? // When sale ends (optional)
 
   // Images and Colors
   mainImagePath  String
@@ -122,9 +123,96 @@ model Product {
   note           Note?
   isDetailFilled Boolean   @default(false)
 
+  // Relations
+  orderItems OrderItem[]
+
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  orderNumber String @unique // e.g., "ORD-2024-00001"
+
+  // Customer Info
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Order Items
+  items OrderItem[]
+
+  // Pricing
+  subtotal     Int // Sum of all items
+  shippingCost Int @default(0)
+  tax          Int @default(0)
+  discount     Int @default(0)
+  totalAmount  Int // Final amount paid
+
+  // Shipping
+  shippingAddress ShippingAddress?
+  trackingNumber  String?
+  isPickUp        Boolean?
+
+  // Payment
+  paymentMethod PaymentMethod
+  paymentStatus PaymentStatus @default(PENDING)
+  paidAt        DateTime?
+
+  // Order Status
+  orderStatus OrderStatus @default(PENDING)
+
+  // Notes & History
+  customerNote  String?
+  adminNote     Note?
+  statusHistory StatusChange[]
+
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  cancelledAt DateTime?
+  deliveredAt DateTime?
+}
+
+model OrderItem {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  orderId String @db.ObjectId
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+
+  // Snapshot at time of purchase (prices may change later)
+  productName      String
+  productCode      String
+  productImagePath String
+  selectedColor    Color?
+
+  // Pricing at time of purchase
+  unitPrice Int // Price per item when ordered
+  quantity  Int
+  subtotal  Int // unitPrice * quantity
+
+  // Customization (if applicable)
+  customization String?
+}
+
+type ShippingAddress {
+  recipientName String
+  phone         String
+  street1       String
+  street2       String?
+  city          String
+  zip           String
+  country       String
+}
+
+type StatusChange {
+  status    OrderStatus
+  changedAt DateTime
+  changedBy IdAndRole?
+  note      String?
 }
 
 enum Status {
@@ -171,4 +259,29 @@ enum Role {
   CUSTOMER
   ADMIN
   ROOT
+}
+
+enum OrderStatus {
+  PENDING // Order placed, awaiting payment
+  PAYMENT_CONFIRMED // Payment received
+  PROCESSING // Being prepared
+  SHIPPED // Out for delivery
+  DELIVERED // Successfully delivered
+  CANCELLED // Cancelled by customer/admin
+  REFUNDED // Payment refunded
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PAYPAL
+  BANK_TRANSFER
+  CASH_ON_DELIVERY
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
 }

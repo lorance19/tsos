@@ -173,7 +173,7 @@ function ProductDetail() {
                             <div className="flex items-baseline gap-3">
                                 <span className="text-3xl font-bold text-error">${displayPrice}</span>
                                 <span className="text-xl text-base-content/50 line-through">${product.price}</span>
-                                <span className="text-error">Save {discountPercent}%</span>
+                                <span className="font-open text-error">Save {discountPercent}%</span>
                             </div>
                         ) : (
                             <div className="text-3xl font-bold text-primary">${displayPrice}</div>

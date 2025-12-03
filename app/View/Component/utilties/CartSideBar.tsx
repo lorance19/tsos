@@ -6,6 +6,8 @@ import {FiShoppingCart} from "react-icons/fi";
 import {IoClose} from "react-icons/io5";
 import {LuMinus, LuPlus, LuTrash} from "react-icons/lu";
 import {calculateDiscountPercent, isSaleActive} from "@/app/busniessLogic/Product/productManager";
+import Link from "next/link";
+import {PRODUCT} from "@/app/Util/constants/paths";
 
 function CartSideBar() {
     const { cart, isCartOpen, toggleCart, removeFromCart, updateQuantity, cartTotal } = useCartContext();
@@ -119,11 +121,13 @@ function CartSideBar() {
                             <p className="mt-0.5 text-sm text-gray-500 mb-6">
                                 Shipping and taxes calculated at checkout.
                             </p>
-                            <button
-                                className="btn btn-primary">
-
+                            <Link
+                                href={PRODUCT.CHECK_OUT.VIEW}
+                                className="btn btn-primary"
+                                onClick={toggleCart}
+                            >
                                 Checkout
-                            </button>
+                            </Link>
                         </div>
                     )}
                 </div>

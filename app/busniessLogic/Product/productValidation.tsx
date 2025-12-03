@@ -1,6 +1,6 @@
 // Image set schema with proper file validation
 import {z} from "zod";
-import {$Enums, Color} from "@prisma/client";
+import {$Enums} from "@prisma/client";
 import ProductType = $Enums.ProductType;
 import Badge = $Enums.Badge;
 

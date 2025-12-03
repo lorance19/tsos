@@ -58,4 +58,5 @@ export const PRODUCT = {
     STANDALONE: (productId: string) => (
         { VIEW : `/View/product/${productId}`, API: `/api/view/product/${productId}` }
     ),
+    CHECK_OUT: { VIEW : '/View/product/checkout', API: '/api/view/product/checkout' },
 }
