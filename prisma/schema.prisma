@@ -136,8 +136,8 @@ model Order {
   orderNumber String @unique // e.g., "ORD-2024-00001"
 
   // Customer Info
-  userId String @db.ObjectId
-  user   User   @relation(fields: [userId], references: [id])
+  userId String? @db.ObjectId
+  user   User?   @relation(fields: [userId], references: [id])
 
   // Order Items
   items OrderItem[]

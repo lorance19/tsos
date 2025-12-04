@@ -15,7 +15,7 @@ import {z} from "zod";
 import { userEditUserSchema} from "@/app/busniessLogic/User/userValidation";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {COUNTRY} from "@/app/Util/constants/country";
+import {COUNTRIES, COUNTRY} from "@/app/Util/constants/country";
 import {CiGlobe, CiHashtag, CiHome, CiMail, CiMap, CiPhone, CiUser} from "react-icons/ci";
 import {useToastNotifications} from "@/app/Util/toast";
 import UnexpectedError from "@/app/View/Component/UnexpectedError";
@@ -25,10 +25,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import axios from "axios";
 
 type editUserForm = z.infer<typeof userEditUserSchema>;
-const COUNTRIES = Object.entries(COUNTRY).map(([key, value]) => ({
-    name: key,
-    code: value,
-}));
+
 
 function EditProfileClient() {
     const params = useParams();

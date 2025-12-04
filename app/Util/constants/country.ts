@@ -249,3 +249,8 @@ export enum COUNTRY {
     Zambia = 'ZM',
     Zimbabwe = 'ZW',
 }
+
+export const COUNTRIES = Object.entries(COUNTRY).map(([key, value]) => ({
+    name: key,
+    code: value,
+}));
