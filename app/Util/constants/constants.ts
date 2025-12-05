@@ -1,0 +1,1 @@
+export const TAX : number = 0.1;
