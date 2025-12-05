@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, {Suspense} from 'react';
 import {
     userLoginValidationSchema,
     userLoginValidationSchemaKey
@@ -12,25 +12,27 @@ import ErrorMessage from "@/app/View/Component/ErrorMessage";
 import {GrKey} from "react-icons/gr";
 import {userLogin} from "@/app/busniessLogic/User/userManager";
 import SubmitButton from "@/app/View/Component/SubmitButton";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import Link from "next/link";
 import {SIGN_UP} from "@/app/Util/constants/paths";
 
-export type LoginForm = z.infer<typeof userLoginValidationSchema>
+export type LoginFormData = z.infer<typeof userLoginValidationSchema>
 
-function Login() {
+function LoginForm() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirectUrl = searchParams.get('redirect') || '/';
 
-    const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
+    const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
         resolver: zodResolver(userLoginValidationSchema),
     });
 
     const loginMutation = userLogin();
     const {isPending, isError, error } = loginMutation;
-    const onSubmit: SubmitHandler<LoginForm> = (data) => {
+    const onSubmit: SubmitHandler<LoginFormData> = (data) => {
         loginMutation.mutate(data, {
             onSuccess: ()=> {
-                router.push("/")
+                router.push(redirectUrl)
             }
         })
     }
@@ -59,4 +61,10 @@ function Login() {
     );
 }
 
-export default Login;
+export default function Login() {
+    return (
+        <Suspense fallback={<div className="flex justify-center mt-5"><span className="loading loading-spinner loading-lg"></span></div>}>
+            <LoginForm />
+        </Suspense>
+    );
+}

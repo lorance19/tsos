@@ -26,7 +26,7 @@ export function OrderSummary() {
     return (
         <div className="card bg-base-100 shadow-sm p-6 flex flex-col h-full">
             {/* Header - Fixed */}
-            <p className="text-xl font-montserrat mb-4 flex-shrink-0">Order Summary</p>
+            <p className="text-2xl font-montserrat mb-4 flex-shrink-0">Order Summary</p>
 
             {/* Cart Items List - Scrollable */}
             <div className="flex-1 overflow-y-auto mb-6 pr-2 -mr-2">
@@ -80,7 +80,7 @@ export function OrderSummary() {
             </div>
 
             {/* Price Breakdown - Fixed at Bottom */}
-            <div className="space-y-2 border-t pt-4 flex-shrink-0">
+            <div className="space-y-2 pt-4 flex-shrink-0 bg-yellow-50 p-1">
                 <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
                     <span className="font-medium">${cartTotal.toFixed(2)}</span>

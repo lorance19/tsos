@@ -8,6 +8,10 @@ import {ShippingInformation} from './ShippingInformation';
 import {BillingInformation} from './BillingInformation';
 import {useCartContext} from "@/app/View/product/CartContext";
 import {OrderSummary} from './OrderSummary';
+import Link from "next/link";
+import {LOGIN_URL, PRODUCT} from "@/app/Util/constants/paths";
+import {useAuth} from "@/app/auth/context";
+import {Role} from "@prisma/client";
 
 type ShippingForm = z.infer<typeof orderValidation>;
 
@@ -18,7 +22,7 @@ function Checkout() {
     const { register, handleSubmit, formState: { errors }, watch } = useForm<ShippingForm>({
         resolver: zodResolver(orderValidation),
     });
-
+    const {user} = useAuth();
     const {cart} = useCartContext();
 
     const selectedPaymentMethod = watch('paymentMethod.method');
@@ -40,9 +44,20 @@ function Checkout() {
                         errors={errors}
                         selectedPaymentMethod={selectedPaymentMethod}
                     />
-                    <div className="flex lg:justify-center ">
-                        <button className="btn btn-primary">Submit</button>
+                    <div className="flex flex-col items-center gap-3 mt-4">
+                        <button type="submit" className="btn btn-primary w-full lg:w-auto lg:px-12">
+                            Submit Order
+                        </button>
+                        {!user && (
+                            <Link
+                                href={`${LOGIN_URL}?redirect=${encodeURIComponent(PRODUCT.CHECK_OUT.VIEW)}`}
+                                className="text-md text-primary hover:underline text-center"
+                            >
+                                Login to unlock hidden deals?
+                            </Link>
+                        )}
                     </div>
+
                 </div>
             </div>
             <div className="w-full lg:w-1/3 flex">
