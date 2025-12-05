@@ -3,7 +3,7 @@ import {adminAddUserSchema, createUserSchema, adminEditUserSchema, userEditUserS
 import {useMutation, useQuery} from "@tanstack/react-query";
 import axios from "axios";
 import {ADMIN_MANAGEMENTS, EDIT_PROFILE, SIGN_UP, USER_PROFILE} from "@/app/Util/constants/paths";
-import {LoginForm} from "@/app/View/login/page";
+import {LoginFormData} from "@/app/View/login/page";
 import {getUser} from "@/app/auth/login";
 import {Role} from "@prisma/client";
 
@@ -70,7 +70,7 @@ export function useCreateUser() {
 
 export function userLogin() {
     return useMutation({
-        mutationFn: async (data: LoginForm) => {
+        mutationFn: async (data: LoginFormData) => {
             return await getUser(data);
         }
     });

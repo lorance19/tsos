@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, {useEffect} from 'react';
 import {orderValidation} from "@/app/busniessLogic/Order/orderValidation";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
@@ -12,18 +12,45 @@ import Link from "next/link";
 import {LOGIN_URL, PRODUCT} from "@/app/Util/constants/paths";
 import {useAuth} from "@/app/auth/context";
 import {Role} from "@prisma/client";
+import {useGetUserById} from "@/app/busniessLogic/User/userManager";
 
 type ShippingForm = z.infer<typeof orderValidation>;
 
 
 
 function Checkout() {
-
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<ShippingForm>({
-        resolver: zodResolver(orderValidation),
-    });
     const {user} = useAuth();
     const {cart} = useCartContext();
+
+    // Fetch full user data if logged in
+    const {data: userData} = useGetUserById(user?.userId || '');
+
+    const { register, handleSubmit, formState: { errors }, watch, reset } = useForm<ShippingForm>({
+        resolver: zodResolver(orderValidation),
+    });
+
+    // Populate form with user data when available
+    useEffect(() => {
+        if (userData) {
+            const fullName = [userData.firstName, userData.lastName].filter(Boolean).join(' ');
+
+            reset({
+                personalInfo: {
+                    name: fullName || '',
+                    email: userData.email || '',
+                    phone: userData.phone || '',
+                },
+                address: userData.address ? {
+                    street1: userData.address.street1 || '',
+                    street2: userData.address.street2 || '',
+                    city: userData.address.city || '',
+                    zip: userData.address.zip || '',
+                    country: userData.address.country || '',
+                } : undefined,
+                isPickUp: false,
+            }, { keepDefaultValues: false });
+        }
+    }, [userData, reset]);
 
     const selectedPaymentMethod = watch('paymentMethod.method');
 
