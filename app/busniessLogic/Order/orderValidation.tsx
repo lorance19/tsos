@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {addressSchema} from "@/app/busniessLogic/User/userValidation";
+import {addressSchema, emailAndPhoneValidation} from "@/app/busniessLogic/User/userValidation";
 import {PaymentMethod} from "@prisma/client";
 
 // Card details schema (for credit/debit cards)
@@ -69,9 +69,14 @@ const paymentValidationSchema = z.object({
     }
 });
 
+
+
 // Shipping schema with conditional validation
 export const orderValidation = z.object({
     isPickUp: z.boolean(),
+    personalInfo: emailAndPhoneValidation.extend({
+        name: z.string().min(1, 'Name is required'),
+    }),
     address: addressSchema.optional().nullable(),
     paymentMethod: paymentValidationSchema
 }).superRefine((data, ctx) => {

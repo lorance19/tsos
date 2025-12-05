@@ -6,6 +6,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {ShippingInformation} from './ShippingInformation';
 import {BillingInformation} from './BillingInformation';
+import {useCartContext} from "@/app/View/product/CartContext";
 
 type ShippingForm = z.infer<typeof orderValidation>;
 
@@ -16,6 +17,8 @@ function Checkout() {
     const { register, handleSubmit, formState: { errors }, watch } = useForm<ShippingForm>({
         resolver: zodResolver(orderValidation),
     });
+
+    const {cart} = useCartContext();
 
     const selectedPaymentMethod = watch('paymentMethod.method');
 
@@ -41,8 +44,9 @@ function Checkout() {
                     </div>
                 </div>
             </div>
-            <div className="w-full lg:w-1/3">
-                Order Summary
+            <div className="card bg-base-100 shadow-sm m-1 p-3">
+                <p className="text-xl font-montserrat">Order Summary</p>
+
             </div>
         </form>
     );

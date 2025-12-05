@@ -54,8 +54,16 @@ export const addressSchema = z.object({
     }).optional().nullable()
 })
 
+export const emailAndPhoneValidation = z.object({
+    phone: z.string().min(10, 'Phone number must be at least 10 digits') // Minimum length
+        .max(15, 'Phone number must be at most 15 digits') // Maximum length
+        .regex(/^\d+$/, 'Phone number must contain only digits'), // Only digits allowed
+    email: z.email("Please enter valid email")
+        .min(5, 'Email must be at least 5 characters long')
+        .max(50, 'Email must be at most 50 characters long'),
+})
 
-export const userEditUserSchema = z.object({
+export const userEditUserSchema = emailAndPhoneValidation.extend({
     firstName: z.string()
         .min(1, "First name is required")
         .max(30)
@@ -65,12 +73,6 @@ export const userEditUserSchema = z.object({
         .max(30)
         .regex(/^[a-zA-Z]+$/, "Username must contain only letters"),
     dob: z.date().optional(),
-    phone: z.string().min(10, 'Phone number must be at least 10 digits') // Minimum length
-        .max(15, 'Phone number must be at most 15 digits') // Maximum length
-        .regex(/^\d+$/, 'Phone number must contain only digits'), // Only digits allowed
-    email: z.email("Please enter valid email")
-        .min(5, 'Email must be at least 5 characters long')
-        .max(50, 'Email must be at most 50 characters long'),
     address: addressSchema.optional(),
 })
 

@@ -47,7 +47,7 @@ export function BillingInformation({register, errors, selectedPaymentMethod}: Bi
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-4">
                         <div className="form-control">
                             <label
-                                className={`input validator lg:w-full ${errors.paymentMethod?.cardNumber ? 'input-error' : ''}`}>
+                                className={`input validator w-full ${errors.paymentMethod?.cardNumber ? 'input-error' : ''}`}>
                                 <CiCreditCard1 size={20}/>
                                 <input
                                     {...register('paymentMethod.cardNumber')}
@@ -64,7 +64,7 @@ export function BillingInformation({register, errors, selectedPaymentMethod}: Bi
                         </div>
                         <div className="form-control">
                             <label
-                                className={`input validator lg:w-full ${errors.paymentMethod?.cardholderName ? 'input-error' : ''}`}>
+                                className={`input validator w-full ${errors.paymentMethod?.cardholderName ? 'input-error' : ''}`}>
                                 <CiUser size={20}/>
                                 <input
                                     {...register('paymentMethod.cardholderName')}
@@ -80,7 +80,7 @@ export function BillingInformation({register, errors, selectedPaymentMethod}: Bi
                         </div>
                         <div className="form-control">
                             <label
-                                className={`input lg:w-full validator ${errors.paymentMethod?.expiryDate ? 'input-error' : ''}`}>
+                                className={`input w-full validator ${errors.paymentMethod?.expiryDate ? 'input-error' : ''}`}>
                                 <input
                                     {...register('paymentMethod.expiryDate')}
                                     type="text"
@@ -96,7 +96,7 @@ export function BillingInformation({register, errors, selectedPaymentMethod}: Bi
                         </div>
                         <div className="form-control">
                             <label
-                                className={`input lg:w-full validator ${errors.paymentMethod?.cvv ? 'input-error' : ''}`}>
+                                className={`input w-full validator ${errors.paymentMethod?.cvv ? 'input-error' : ''}`}>
                                 <input
                                     {...register('paymentMethod.cvv')}
                                     type="text"
