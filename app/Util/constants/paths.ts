@@ -1,3 +1,5 @@
+import order from "@/app/View/order/[id]/Order";
+
 export const LOGIN_URL = '/View/login';
 export const UNAUTH_URL = '/View/unauthorized';
 export const UNEXPECTED_URL = '/View/unexpectedError';
@@ -60,3 +62,8 @@ export const PRODUCT = {
     ),
     CHECK_OUT: { VIEW : '/View/product/checkout', API: '/api/view/product/checkout' },
 }
+
+export const ORDER = (orderId: string)  => ({
+    VIEW : `/View/order/${orderId}`,
+    API: `/api/view/order/${orderId}`
+})

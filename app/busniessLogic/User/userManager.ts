@@ -5,7 +5,6 @@ import axios from "axios";
 import {ADMIN_MANAGEMENTS, EDIT_PROFILE, SIGN_UP, USER_PROFILE} from "@/app/Util/constants/paths";
 import {LoginFormData} from "@/app/View/login/page";
 import {getUser} from "@/app/auth/login";
-import {Role} from "@prisma/client";
 
 
 type UserForm = z.infer<typeof createUserSchema>;

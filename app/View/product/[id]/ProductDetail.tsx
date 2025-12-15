@@ -176,7 +176,7 @@ function ProductDetail() {
                                 <span className="font-open text-error">Save {discountPercent}%</span>
                             </div>
                         ) : (
-                            <div className="text-3xl font-bold text-primary">${displayPrice}</div>
+                            <div className="text-3xl font-bold ">${displayPrice}</div>
                         )}
                     </div>
 

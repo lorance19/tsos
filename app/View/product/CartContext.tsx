@@ -30,6 +30,7 @@ interface CartContextType {
     addToCart: (product: ProductViewInfo) => void;
     removeFromCart: (productId: string) => void;
     updateQuantity: (productId: string, delta: number) => void;
+    clearCart: () => void;
     cartTotal: number;
     cartCount: number;
 }
@@ -93,6 +94,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         );
     }, []);
 
+    const clearCart = useCallback(() => {
+        setCart([]);
+    }, []);
+
     const toggleCart = useCallback(() => setIsCartOpen(!isCartOpen), [isCartOpen]);
 
     // Derived State
@@ -112,9 +117,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         addToCart,
         removeFromCart,
         updateQuantity,
+        clearCart,
         cartTotal,
         cartCount,
-    }), [cart, isCartOpen, toggleCart, addToCart, removeFromCart, updateQuantity, cartTotal, cartCount]);
+    }), [cart, isCartOpen, toggleCart, addToCart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount]);
 
     return (
         <CartContext.Provider value={contextValue}>

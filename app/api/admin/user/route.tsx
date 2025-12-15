@@ -2,6 +2,7 @@ import {NextRequest, NextResponse} from "next/server";
 import {getCredential, hasAnyRole} from "@/app/Util/constants/session";
 import {Role} from "@prisma/client";
 import {getAllUsersExceptId} from "@/app/services/UserService";
+import prisma from "@/prisma/client";
 
 export async function GET(request: NextRequest) {
     const cred = await getCredential();

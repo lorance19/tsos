@@ -14,9 +14,9 @@ export function OrderSummary() {
 
     if (cart.length === 0) {
         return (
-            <div className="card bg-base-100 shadow-sm p-6">
+            <div className="card bg-base-100 shadow-sm p-6 w-full">
                 <p className="text-xl font-montserrat mb-4">Order Summary</p>
-                <div className="text-center text-gray-500 py-8">
+                <div className="text-center text-gray-500 py-8 role alert alert-info alert-soft">
                     Your cart is empty
                 </div>
             </div>
@@ -24,7 +24,7 @@ export function OrderSummary() {
     }
 
     return (
-        <div className="card bg-base-100 shadow-sm p-6 flex flex-col h-full">
+        <div className="card bg-base-100 shadow-sm p-6 flex flex-col h-full w-full">
             {/* Header - Fixed */}
             <p className="text-2xl font-montserrat mb-4 flex-shrink-0">Order Summary</p>
 
