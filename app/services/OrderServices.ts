@@ -132,7 +132,39 @@ export async function getOrderById(id: string) {
     return prisma.order.findUnique({
         where: { id: id},
         include: {
+            items: true,
             user: true
+        }
+    });
+}
+
+export async function getRecentMonthOrderByUserId(userId: string, credential: Credential) {
+    const user = credential.getUser();
+
+    // Authorization: Only the user themselves, ADMIN, or ROOT can access their orders
+    const isOwnUser = user?.userId === userId;
+    const isAdminOrRoot = user?.role === 'ADMIN' || user?.role === 'ROOT';
+
+    if (!isOwnUser && !isAdminOrRoot) {
+        throw new Error('Unauthorized: You can only access your own orders');
+    }
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    return prisma.order.findMany({
+        where: {
+            userId: userId,
+            createdAt: {
+                gte: thirtyDaysAgo
+            }
+        },
+        include: {
+            items: true,
+            user: true
+        },
+        orderBy: {
+            createdAt: 'desc'
         }
     });
 }

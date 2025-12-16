@@ -2,12 +2,12 @@
 import React from 'react';
 import {useParams} from "next/navigation";
 import {IoIosCheckmarkCircleOutline} from "react-icons/io";
-import {useGetOrderById} from "@/app/busniessLogic/Order/orderManager.ts";
 import Link from "next/link";
 import {USER_PROFILE} from "@/app/Util/constants/paths";
 import {useAuth} from "@/app/auth/context";
+import {useGetOrderById} from "@/app/busniessLogic/Order/orderManager.ts";
 
-function Order() {
+function SuccessOrder() {
     const params = useParams();
     const orderId = params.id as string;
     const {user} = useAuth();
@@ -51,4 +51,4 @@ function Order() {
     );
 }
 
-export default Order;
+export default SuccessOrder;

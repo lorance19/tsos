@@ -1,10 +1,10 @@
 import React from 'react';
-import OrderDetail from "@/app/View/order/[id]/OrderDetail";
+import SuccessOrder from "@/app/View/order/orderSuccess/[id]/SuccessOrder";
 
 function Page() {
     return (
         <>
-            <OrderDetail/>
+            <SuccessOrder/>
         </>
     );
 }

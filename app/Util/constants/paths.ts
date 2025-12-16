@@ -1,4 +1,4 @@
-import order from "@/app/View/order/[id]/Order";
+import order from "@/app/View/order/orderSuccess/[id]/SuccessOrder";
 
 export const LOGIN_URL = '/View/login';
 export const UNAUTH_URL = '/View/unauthorized';
@@ -66,4 +66,12 @@ export const PRODUCT = {
 export const ORDER = (orderId: string)  => ({
     VIEW : `/View/order/${orderId}`,
     API: `/api/view/order/${orderId}`
+})
+
+export const ORDER_SUCCESS = (orderId: string)  => ({
+    VIEW : `/View/order/orderSuccess/${orderId}`,
+})
+export const ORDER_BY_USER_ID = (userId: string)  => ({
+    VIEW : `/View/order/byUserId/${userId}`,
+    API: `/api/view/order/byUserId/${userId}`
 })

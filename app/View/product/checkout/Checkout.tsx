@@ -9,7 +9,7 @@ import {BillingInformation} from './BillingInformation';
 import {useCartContext, getEffectivePrice} from "@/app/View/product/CartContext";
 import {OrderSummary} from './OrderSummary';
 import Link from "next/link";
-import {LOGIN_URL, ORDER, PRODUCT} from "@/app/Util/constants/paths";
+import {LOGIN_URL, ORDER, ORDER_SUCCESS, PRODUCT} from "@/app/Util/constants/paths";
 import {useAuth} from "@/app/auth/context";
 import {useGetUserById} from "@/app/busniessLogic/User/userManager";
 import {useSubmitOrder} from "@/app/busniessLogic/Order/orderManager.ts";
@@ -131,7 +131,7 @@ function Checkout() {
                 // Clear cart and redirect to success page
                 clearCart();
                 showSuccess(`Order placed successfully! Order number: ${response.orderNumber}`);
-                router.push(ORDER(response.orderId).VIEW);
+                router.push(ORDER_SUCCESS(response.orderId).VIEW);
             }
         } catch (error) {
             showError("Oops. Something went wrong!");;

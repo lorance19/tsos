@@ -111,6 +111,10 @@ export class Credential {
         return this.user?.role === Role.USER;
     }
 
+    isCustomer(): boolean {
+        return this.user?.role === Role.CUSTOMER;
+    }
+
     hasRole(role: Role): boolean {
         return this.user?.role === role;
     }

@@ -16,11 +16,15 @@ import {
 import {FaLocationPin} from "react-icons/fa6";
 import Link from "next/link";
 import {EDIT_PROFILE} from "@/app/Util/constants/paths";
+import {useGetOrdersByUserId} from "@/app/busniessLogic/Order/orderManager.ts";
+import RecentOrders from "@/app/View/userProfile/[id]/RecentOrders";
 
 
 function UserProfileMain({id}: { id: string }) {
 
     const { data: user, isLoading, error } = useGetUserById(id);
+    const { data:recentOrders, isLoading: isRecentOrdersLoading, error: recentOrdersError } = useGetOrdersByUserId(id);
+
     if (isLoading) {
         return <p>Loading Profile ... </p>
     }
@@ -37,7 +41,6 @@ function UserProfileMain({id}: { id: string }) {
         month: 'long',
         day: 'numeric'
     });
-
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4">
@@ -121,11 +124,22 @@ function UserProfileMain({id}: { id: string }) {
                 </div>
             </div>
 
-            {/* Second Section Placeholder */}
-            <div className="card bg-base-100 shadow-xl">
+            {/* Recent Orders Section */}
+            <div className="card bg-base-100 shadow-xl h-fit">
                 <div className="card-body">
                     <div className="card-title text-2xl mb-4 font-montserrat pb-2">Orders from Past 30 Days</div>
-                    <p className="text-base-content/60">Content coming soon...</p>
+                    <div className="overflow-y-auto max-h-[600px]">
+                        {recentOrdersError ? (
+                            <div className="alert alert-error">
+                                <span>Failed to load orders. Please try again later.</span>
+                            </div>
+                        ) : (
+                            <RecentOrders
+                                orders={recentOrders || []}
+                                isLoading={isRecentOrdersLoading}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
 
