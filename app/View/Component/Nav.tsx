@@ -101,7 +101,10 @@ function Nav() {
                 <div className="col-span-1"></div>
                 <div className="col-span-4">
                     <ul className="flex gap-6 flex-1 justify-center">
-                        {visibleLinks.map(link =>
+                        <Link href={allLinks[1].href} key={allLinks[0].href}
+                              className={`hover:text-secondary transition delay-70 duration-150 hover:scale-110`}
+                        >{allLinks[1].label}</Link>
+                        {visibleLinks.filter(link => link.label !== "Home").map(link =>
                             <Link href={link.href} key={link.href}
                                   className={`
                                 ${link.hidden ? "hidden" : ""}

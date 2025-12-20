@@ -73,7 +73,7 @@ function ProductDisplay(props : ProductViewInfo) {
                             e.stopPropagation();
                             addToCart(props);
                         }}
-                        className="btn btn-outline btn-secondary hover:bg-primary
+                        className="btn btn-outline btn-secondary hover:bg-secondary hover:text-white
                         transition-colors active:scale-95"
                     >
                         Add to Cart
