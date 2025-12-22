@@ -79,8 +79,6 @@ function ProductDisplay(props : ProductViewInfo) {
                         Add to Cart
                     </button>
                 </div>
-
-
             </div>
         </Link>
     );

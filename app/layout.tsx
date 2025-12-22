@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QueryClientProvider from "@/app/Util/QueryClientProvider";
 import Nav from "@/app/View/Component/Nav";
+import Footer from "@/app/View/Component/Footer";
 import {getCredential} from "@/app/Util/constants/session";
 import {AuthProvider} from "@/app/auth/context";
 import React from "react";
@@ -45,6 +46,7 @@ export default async function RootLayout({
                   <main>
                       {children}
                   </main>
+                  <Footer/>
               </CartProvider>
           </AuthProvider>
       </QueryClientProvider>

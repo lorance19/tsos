@@ -68,9 +68,16 @@ export const ORDER = (orderId: string)  => ({
     API: `/api/view/order/${orderId}`
 })
 
+export const CONTACT_US = {
+    VIEW : `/View/contactUs`,
+    API: `/api/view/contactUs`
+}
+
+
 export const ORDER_SUCCESS = (orderId: string)  => ({
     VIEW : `/View/order/orderSuccess/${orderId}`,
 })
+
 export const ORDER_BY_USER_ID = (userId: string)  => ({
     VIEW : `/View/order/byUserId/${userId}`,
     API: `/api/view/order/byUserId/${userId}`

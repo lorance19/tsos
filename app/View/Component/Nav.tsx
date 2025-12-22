@@ -2,13 +2,14 @@
 import React, {useEffect, useState} from 'react';
 import Link from "next/link";
 import {usePathname,} from "next/navigation";
-import {LOGIN_URL, PRODUCT, USER_PROFILE} from "@/app/Util/constants/paths";
+import {CONTACT_US, LOGIN_URL, PRODUCT, USER_PROFILE} from "@/app/Util/constants/paths";
 import {Role} from "@prisma/client";
 import {useAuth} from "@/app/auth/context";
 
 import SignOutButton from "@/app/View/Component/SignOutButton";
 import {LuShoppingCart} from "react-icons/lu";
 import {useCartContext} from "@/app/View/product/CartContext";
+import {Path} from "@humanfs/core";
 
 export interface NavLink {
     label: string;
@@ -50,7 +51,7 @@ function Nav() {
         {label: 'Thit Ser', href: '/', hidden: true},
         {label: 'Home', href:'/', hidden: false},
         {label: 'Product', href: PRODUCT.LIST.VIEW, hidden: false},
-        {label: 'Contact Us', href:'/View/Contact Us', hidden: false},
+        {label: 'Contact Us', href: CONTACT_US.VIEW, hidden: false},
 
         // Public links (only show when NOT logged in)
         {label: 'Login', href: LOGIN_URL, hidden: false, requireAuth: false},
