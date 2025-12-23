@@ -83,12 +83,13 @@ model Login {
 }
 
 model Issue {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
-  status      Status   @default(OPEN)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  status      Status      @default(OPEN)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  submitter   ContactInfo
 }
 
 model Product {
@@ -206,6 +207,12 @@ type ShippingAddress {
   city          String
   zip           String
   country       String
+}
+
+type ContactInfo {
+  name  String?
+  email String
+  id    String?
 }
 
 type StatusChange {

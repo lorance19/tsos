@@ -70,7 +70,7 @@ export const ORDER = (orderId: string)  => ({
 
 export const CONTACT_US = {
     VIEW : `/View/contactUs`,
-    API: `/api/view/contactUs`
+    API: `/api/view/issue`
 }
 
 
