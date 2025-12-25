@@ -9,6 +9,8 @@ import {AuthProvider} from "@/app/auth/context";
 import React from "react";
 import {CartProvider} from "@/app/View/product/CartContext";
 import CartSideBar from "@/app/View/Component/utilties/CartSideBar";
+import {ToastProvider} from "@/app/Util/ToastContext";
+import ToastContainer from "@/app/View/Component/ToastContainer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,14 +42,17 @@ export default async function RootLayout({
       >
       <QueryClientProvider>
           <AuthProvider user={user} isPending={false}>
-              <CartProvider>
-                  <CartSideBar/>
-                  <Nav/>
-                  <main>
-                      {children}
-                  </main>
-                  <Footer/>
-              </CartProvider>
+              <ToastProvider>
+                  <CartProvider>
+                      <CartSideBar/>
+                      <Nav/>
+                      <main>
+                          {children}
+                      </main>
+                      <Footer/>
+                      <ToastContainer/>
+                  </CartProvider>
+              </ToastProvider>
           </AuthProvider>
       </QueryClientProvider>
       </body>
