@@ -17,6 +17,11 @@ export async function createIssue(data: CreateIssueForm) {
             data: {
                 title: data.title,
                 description: data.description,
+                submitter: {
+                    name: data.name,
+                    email: data.email,
+                    role: data.role,
+                }
             }
         });
         return issue;

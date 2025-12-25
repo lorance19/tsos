@@ -212,7 +212,7 @@ type ShippingAddress {
 type ContactInfo {
   name  String?
   email String
-  id    String?
+  role  Role?
 }
 
 type StatusChange {
