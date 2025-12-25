@@ -57,7 +57,7 @@ function ContactForm() {
                             <fieldset disabled={isPending}>
                                 {/* Name Field */}
                                 <div className="p-2">
-                                    <label className="input input-bordered flex items-center gap-2 w-full">
+                                    <label className={`input input-bordered validator ${errors.name ? 'input-error': ''} flex items-center gap-2 w-full`}>
                                         <FaUser className="opacity-70" />
                                         <input
                                             type="text"
@@ -66,12 +66,16 @@ function ContactForm() {
                                             className="grow"
                                         />
                                     </label>
-                                    <ErrorMessage>{errors.name?.message}</ErrorMessage>
+                                    {errors.name && (
+                                        <small className="validator-hint visible my-0 text-error">
+                                            {errors.name.message}
+                                        </small>
+                                    )}
                                 </div>
 
                                 {/* Email Field */}
                                 <div className="p-2">
-                                    <label className="input input-bordered flex items-center gap-2 w-full">
+                                    <label className={`input input-bordered validator ${errors.email ? 'input-error': ''} flex items-center gap-2 w-full`}>
                                         <IoMailSharp className="opacity-70" />
                                         <input
                                             type="email"
@@ -80,12 +84,16 @@ function ContactForm() {
                                             className="grow"
                                         />
                                     </label>
-                                    <ErrorMessage>{errors.email?.message}</ErrorMessage>
+                                    {errors.email && (
+                                    <small className="validator-hint visible my-0 text-error">
+                                        {errors.email.message}
+                                    </small>
+                                    )}
                                 </div>
 
                                 {/* Subject Field */}
                                 <div className="p-2">
-                                    <label className="input input-bordered flex items-center gap-2 w-full">
+                                    <label className={`input validator input-bordered ${errors.title ? 'input-error': ''} flex items-center gap-2 w-full`}>
                                         <MdOutlineSubject className="opacity-70" />
                                         <input
                                             type="text"
@@ -94,12 +102,16 @@ function ContactForm() {
                                             className="grow"
                                         />
                                     </label>
-                                    <ErrorMessage>{errors.title?.message}</ErrorMessage>
+                                    {errors.title && (
+                                        <small className="validator-hint visible my-0 text-error">
+                                            {errors.title.message}
+                                        </small>
+                                    )}
                                 </div>
 
                                 {/* Message Field */}
                                 <div className="p-2">
-                                    <label className="form-control">
+                                    <label className={`form-control validator`}>
                                         <div className="label">
                                             <span className="label-text flex items-center gap-2">
                                                 <MdOutlineMessage className="opacity-70" />
@@ -107,12 +119,17 @@ function ContactForm() {
                                             </span>
                                         </div>
                                         <textarea
-                                            className="textarea textarea-bordered h-32 w-full"
+                                            className={`textarea textarea-bordered h-32 ${errors.description ? 'input-error': ''} w-full`}
                                             placeholder="Tell us about your inquiry..."
                                             {...register('description')}
                                         ></textarea>
                                     </label>
-                                    <ErrorMessage>{errors.description?.message}</ErrorMessage>
+                                    {errors.description && (
+                                        <small className="validator-hint visible my-0 text-error">
+                                            {errors.description.message}
+                                        </small>
+                                    )}
+
                                 </div>
 
                                 {/* Submit Button */}
